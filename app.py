@@ -4,10 +4,20 @@ import json
 from botocore.exceptions import ClientError
 from chalice import NotFoundError
 from boto3.dynamodb.conditions import Key
+import decimal
 
 app = Chalice(app_name='riot')
-
 ddb = boto3.resource('dynamodb', region_name='us-east-1')
+
+
+class DecimalEncoder(json.JSONEncoder):
+    def default(self, o):
+        if isinstance(o, decimal.Decimal):
+            if o % 1 > 0:
+                return float(o)
+            else:
+                return int(o)
+        return super(DecimalEncoder, self).default(o)
 
 
 @app.route('/things', methods=['GET'])
@@ -34,10 +44,35 @@ def get_thing(thing):
         except ClientError as e:
             raise NotFoundError(thing)
 
+
+@app.route('/introspect')
+def introspect():
+    return app.current_request.to_dict()
+
+
 @app.route('/metrics/{thing}', methods=['GET'])
 def get_metrics(thing):
     table = ddb.Table('sensors')
-    response = table.query(
-        KeyConditionExpression=Key('source').eq(thing)
-    )
-    return response['Items']
+    request = app.current_request
+    params = app.current_request.query_params
+    if request.method == 'GET':
+        try:
+            if 'gt' in params and 'lt' in params:
+                response = table.query(
+                    KeyConditionExpression=Key('source').eq(thing) & Key('timestamp').between(params['gt'], params['lt'])
+                )
+            elif 'gt' in params:
+                response = table.query(
+                    KeyConditionExpression=Key('source').eq(thing) & Key('timestamp').gte(params['gt'])
+                )
+            elif 'lt' in params:
+                response = table.query(
+                    KeyConditionExpression=Key('source').eq(thing) & Key('timestamp').lte(params['lt'])
+                )
+            else:
+                response = table.query(
+                    KeyConditionExpression=Key('source').eq(thing)
+                )
+            return json.dumps(response['Items'], cls=DecimalEncoder)
+        except ClientError as e:
+            raise NotFoundError()
