@@ -21,28 +21,37 @@ def dict_or(d, k1, k2):
     return None
 
 
-def ddb_query(table, response_key, partition_key, partition_value, sort_key, params=None, metric=None):
-    """DynamoDb query using partition key and sort key plus gt, gte, lt, lte, and between"""
-    p_key = Key(partition_key).eq(partition_value)
-    if params is not None:
+def ddb_query(table, response_key, partition_key, partition_value, sort_key=None, params=None, attribute=None):
+    """DynamoDb query using partition key, sort key, and attributes plus gt, gte, lt, lte, and between on sort_key"""
+    p_key = Key(partition_key).eq(partition_value) # query must be partitioned
+    if params is not None and sort_key is not None:
         if ('gt' in params or 'gte' in params) and ('lt' in params or 'lte' in params):
             p_key = p_key & Key(sort_key).between(dict_or(params, 'gt', 'gte'), dict_or(params, 'lt', 'lte'))
         else:
             if 'gt' in params:
                 p_key = p_key & Key(sort_key).gt(params['gt'])
-            if 'gte' in params:
+            elif 'gte' in params:
                 p_key = p_key & Key(sort_key).gte(params['gte'])
-            if 'lt' in params:
+            elif 'lt' in params:
                 p_key = p_key & Key(sort_key).lt(params['lt'])
-            if 'lte' in params:
+            elif 'lte' in params:
                 p_key = p_key & Key(sort_key).lte(params['lte'])
-    if metric is not None:
+    if attribute is not None:
+        if sort_key is None:
+            ex = {"#pkey": partition_key}
+            pe = "#pkey, {}"
+        else:
+            ex = {"#pkey": partition_key, "#skey": sort_key}
+            pe = "#pkey, #skey, {}"
+        x = []
+        for idx, a in enumerate(attribute.split('.')):
+            ex["#n{}".format(idx)] = a
+            x.append("#n{}".format(idx))
         response = table.query(
             KeyConditionExpression=p_key,
-            FilterExpression=Attr('payload.state.reported.' + metric).exists(),
-            ExpressionAttributeNames={"#src": "source", "#ts": "timestamp", "#pl": "payload", "#st": "state",
-                                      "#rpt": "reported", "#v": metric},
-            ProjectionExpression="#src, #ts, #pl.#st.#rpt.#v"
+            FilterExpression=Attr(attribute).exists(),
+            ExpressionAttributeNames=ex,
+            ProjectionExpression=pe.format('.'.join(x))
         )
     else:
         response = table.query(
