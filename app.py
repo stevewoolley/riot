@@ -63,7 +63,7 @@ def ddb_query(table, response_key, partition_key, partition_value, sort_key=None
             x.append("#n{}".format(idx))
         response = table.query(
             KeyConditionExpression=p_key,
-            FilterExpression=Attr(attribute).eq(),
+            FilterExpression=Attr(attribute).exists(),
             ExpressionAttributeNames=ex,
             ProjectionExpression=pe.format('.'.join(x))
         )
