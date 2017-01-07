@@ -14,7 +14,7 @@ SENSORS_PAYLOAD = 'payload'
 PAYLOAD_PREFIX = 'payload.state.reported.{}'
 
 app = Chalice(app_name='riot')
-app.debug = True
+# app.debug = True
 
 DDB = boto3.resource('dynamodb', region_name=REGION)
 
@@ -57,21 +57,29 @@ def ddb_query(table, response_key, partition_key, partition_value, sort_key=None
         else:
             ex = {"#pkey": partition_key, "#skey": sort_key}
             pe = "#pkey, #skey, {}"
-        x = []
+        item = []
         for idx, a in enumerate(attribute.split('.')):
             ex["#n{}".format(idx)] = a
-            x.append("#n{}".format(idx))
+            item.append("#n{}".format(idx))
         response = table.query(
             KeyConditionExpression=p_key,
             FilterExpression=Attr(attribute).exists(),
             ExpressionAttributeNames=ex,
-            ProjectionExpression=pe.format('.'.join(x))
+            ProjectionExpression=pe.format('.'.join(item))
         )
     else:
         response = table.query(
             KeyConditionExpression=p_key
         )
     if response_key in response:
+        # transform result to extract only interesting json key
+        for item in response[response_key]:
+            tmp = item
+            for i in attribute.split('.'):
+                tmp = tmp.get(i)
+            item[attribute.split('.')[-1]] = tmp
+            del item[SENSORS_PAYLOAD]
+        #
         return response[response_key]
     else:
         return []
@@ -80,26 +88,22 @@ def ddb_query(table, response_key, partition_key, partition_value, sort_key=None
 @app.route('/things', methods=['GET'])
 def get_things():
     iot = boto3.client('iot', region_name=REGION)
-    request = app.current_request
-    if request.method == 'GET':
-        try:
-            response = iot.list_things()
-            return response["things"]
-        except ClientError as e:
-            raise NotFoundError()
+    try:
+        response = iot.list_things()
+        return response["things"]
+    except ClientError as e:
+        raise NotFoundError()
 
 
 @app.route('/things/{thing}', methods=['GET'])
 def get_thing(thing):
     iot_data = boto3.client('iot-data', region_name=REGION)
-    request = app.current_request
-    if request.method == 'GET':
-        try:
-            response = iot_data.get_thing_shadow(thingName=thing)
-            body = response[SENSORS_PAYLOAD]
-            return json.loads(body.read())
-        except ClientError as e:
-            raise NotFoundError(thing)
+    try:
+        response = iot_data.get_thing_shadow(thingName=thing)
+        body = response[SENSORS_PAYLOAD]
+        return json.loads(body.read())
+    except ClientError as e:
+        raise NotFoundError(thing)
 
 
 @app.route('/introspect')
@@ -114,4 +118,4 @@ def get_metrics(thing, metric):
         return ddb_query(DDB.Table(SENSORS_TABLE), ITEMS, SENSORS_PARTITION_KEY, thing, SENSORS_SORT_KEY, params,
                          PAYLOAD_PREFIX.format(metric))
     except ClientError as e:
-        raise NotFoundError()
+        raise NotFoundError(thing)
