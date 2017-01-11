@@ -119,3 +119,10 @@ def get_metrics(thing, metric):
                          PAYLOAD_PREFIX.format(metric))
     except ClientError as e:
         raise NotFoundError(thing)
+
+
+@app.route('/publish/{topic}', methods=['PUT'])
+def publish(topic):
+    request = app.current_request
+    iot_data = boto3.client('iot-data', region_name=REGION)
+    iot_data.publish(topic='/{}'.format(topic.replace('.', '/')), qos=0, payload=json.dumps(request.json_body))
