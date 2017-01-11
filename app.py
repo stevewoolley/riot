@@ -85,7 +85,7 @@ def ddb_query(table, response_key, partition_key, partition_value, sort_key=None
         return []
 
 
-@app.route('/things', methods=['GET'])
+@app.route('/things', methods=['GET'], api_key_required=True)
 def get_things():
     iot = boto3.client('iot', region_name=REGION)
     try:
@@ -95,7 +95,7 @@ def get_things():
         raise NotFoundError()
 
 
-@app.route('/things/{thing}', methods=['GET'])
+@app.route('/things/{thing}', methods=['GET'], api_key_required=True)
 def get_thing(thing):
     iot_data = boto3.client('iot-data', region_name=REGION)
     try:
@@ -106,12 +106,12 @@ def get_thing(thing):
         raise NotFoundError(thing)
 
 
-@app.route('/introspect')
+@app.route('/introspect', api_key_required=True)
 def introspect():
     return app.current_request.to_dict()
 
 
-@app.route('/metrics/{thing}/{metric}', methods=['GET'])
+@app.route('/metrics/{thing}/{metric}', methods=['GET'], api_key_required=True)
 def get_metrics(thing, metric):
     params = app.current_request.query_params
     try:
@@ -121,7 +121,7 @@ def get_metrics(thing, metric):
         raise NotFoundError(thing)
 
 
-@app.route('/publish/{topic}', methods=['PUT'])
+@app.route('/publish/{topic}', methods=['PUT'], api_key_required=True)
 def publish(topic):
     request = app.current_request
     iot_data = boto3.client('iot-data', region_name=REGION)
