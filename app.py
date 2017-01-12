@@ -137,7 +137,7 @@ def get_archives(prefix):
         for obj in s3.list_objects_v2(Bucket=ARCHIVE, Prefix=prefix)['Contents']:
             o = json.dumps(obj)
             o['url'] = s3.generate_presigned_url('get_object', Params={'Bucket': ARCHIVE, 'Key': obj['Key']})
-            results.append(obj)
+            results.append(o)
         return results
     except ClientError as e:
         raise NotFoundError()
