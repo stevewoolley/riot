@@ -163,7 +163,7 @@ def get_all_snapshots():
         for obj in s3.list_objects_v2(Bucket=SNAPSHOTS)['Contents']:
             o = dict()
             o['name'] = obj['Key']
-            o['url'] = s3.generate_presigned_url('get_object', Params={'Bucket': ARCHIVE, 'Key': obj['Key']})
+            o['url'] = s3.generate_presigned_url('get_object', Params={'Bucket': SNAPSHOTS, 'Key': obj['Key']})
             o['timestamp'] = date_handler(obj['LastModified'])
             results.append(o)
         return results
@@ -179,7 +179,7 @@ def get_snapshots(prefix):
         for obj in s3.list_objects_v2(Bucket=SNAPSHOTS, Prefix=prefix)['Contents']:
             o = dict()
             o['name'] = obj['Key']
-            o['url'] = s3.generate_presigned_url('get_object', Params={'Bucket': ARCHIVE, 'Key': obj['Key']})
+            o['url'] = s3.generate_presigned_url('get_object', Params={'Bucket': SNAPSHOTS, 'Key': obj['Key']})
             o['timestamp'] = date_handler(obj['LastModified'])
             results.append(o)
         return results
