@@ -152,7 +152,8 @@ def get_archives(prefix):
         return results
     except ClientError as e:
         raise NotFoundError()
-
+    except:
+        raise NotFoundError()
 
 @app.route('/snapshots', methods=['GET'], api_key_required=True)
 def get_all_snapshots():
