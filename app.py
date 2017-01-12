@@ -4,6 +4,7 @@ import json
 from botocore.exceptions import ClientError
 from chalice import NotFoundError
 from boto3.dynamodb.conditions import Key, Attr
+import datetime
 
 REGION = 'us-east-1'
 ITEMS = 'Items'
@@ -13,6 +14,7 @@ SENSORS_SORT_KEY = 'timestamp'
 SENSORS_PAYLOAD = 'payload'
 PAYLOAD_PREFIX = 'payload.state.reported.{}'
 ARCHIVE = 'archive.snerted.com'
+SNAPSHOTS = 'snapshots.snerted.com'
 
 app = Chalice(app_name='riot')
 # app.debug = True
@@ -27,6 +29,13 @@ def dict_or(d, k1, k2):
     elif k2 in d:
         return d[k2]
     return None
+
+
+def date_handler(obj):
+    if hasattr(obj, 'isoformat'):
+        return obj.isoformat()
+    else:
+        raise TypeError
 
 
 def ddb_query(table, response_key, partition_key, partition_value, sort_key=None, params=None, attribute=None):
@@ -135,9 +144,45 @@ def get_archives(prefix):
     try:
         results = []
         for obj in s3.list_objects_v2(Bucket=ARCHIVE, Prefix=prefix)['Contents']:
-            o = json.dumps(obj)
+            o = dict()
+            o['name'] = obj['Key']
             o['url'] = s3.generate_presigned_url('get_object', Params={'Bucket': ARCHIVE, 'Key': obj['Key']})
+            o['timestamp'] = date_handler(obj['LastModified'])
             results.append(o)
         return results
     except ClientError as e:
+        raise NotFoundError()
+
+
+@app.route('/snapshots', methods=['GET'], api_key_required=True)
+def get_all_snapshots():
+    s3 = boto3.client('s3')
+    try:
+        results = []
+        for obj in s3.list_objects_v2(Bucket=SNAPSHOTS)['Contents']:
+            o = dict()
+            o['name'] = obj['Key']
+            o['url'] = s3.generate_presigned_url('get_object', Params={'Bucket': ARCHIVE, 'Key': obj['Key']})
+            o['timestamp'] = date_handler(obj['LastModified'])
+            results.append(o)
+        return results
+    except ClientError as e:
+        raise NotFoundError()
+
+
+@app.route('/snapshots/{prefix}', methods=['GET'], api_key_required=True)
+def get_snapshots(prefix):
+    s3 = boto3.client('s3')
+    try:
+        results = []
+        for obj in s3.list_objects_v2(Bucket=SNAPSHOTS, Prefix=prefix)['Contents']:
+            o = dict()
+            o['name'] = obj['Key']
+            o['url'] = s3.generate_presigned_url('get_object', Params={'Bucket': ARCHIVE, 'Key': obj['Key']})
+            o['timestamp'] = date_handler(obj['LastModified'])
+            results.append(o)
+        return results
+    except ClientError as e:
+        raise NotFoundError()
+    except:
         raise NotFoundError()
