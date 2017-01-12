@@ -12,6 +12,7 @@ SENSORS_PARTITION_KEY = 'source'
 SENSORS_SORT_KEY = 'timestamp'
 SENSORS_PAYLOAD = 'payload'
 PAYLOAD_PREFIX = 'payload.state.reported.{}'
+ARCHIVE = 'archive.snerted.com'
 
 app = Chalice(app_name='riot')
 # app.debug = True
@@ -126,3 +127,15 @@ def publish(topic):
     request = app.current_request
     iot_data = boto3.client('iot-data', region_name=REGION)
     iot_data.publish(topic='/{}'.format(topic.replace('.', '/')), qos=0, payload=json.dumps(request.json_body))
+
+
+@app.route('/archives/{prefix}', methods=['GET'], api_key_required=True)
+def get_archives(prefix):
+    s3 = boto3.client('s3')
+    try:
+        results = []
+        for obj in s3.list_objects_v2(Bucket=ARCHIVE, Prefix=prefix)['Contents']:
+            results.append(s3.generate_presigned_url('get_object', Params={'Bucket': ARCHIVE, 'Key': obj['Key']}))
+        return results
+    except ClientError as e:
+        raise NotFoundError()
