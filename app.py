@@ -155,6 +155,7 @@ def get_archives(prefix):
     except:
         raise NotFoundError()
 
+
 @app.route('/snapshots', methods=['GET'], api_key_required=True)
 def get_all_snapshots():
     s3 = boto3.client('s3')

@@ -1,3 +1,4 @@
 .chalice/
 .idea/
 venv/
+/*.html
