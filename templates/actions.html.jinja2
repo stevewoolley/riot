@@ -1,0 +1,15 @@
+{% extends "base.jinja2" %}
+{% block content %}
+<div class="container">
+    <h1>
+        Actions
+    </h1>
+    <h4>
+        <div id="info"></div>
+    </h4>
+    <script>
+      var info = document.getElementById('info');
+      info.innerHTML = 'Identity Id: ' + creds.params.IdentityId;
+    </script>
+</div>
+{% endblock %}

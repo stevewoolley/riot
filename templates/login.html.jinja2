@@ -44,7 +44,6 @@
                           info.innerHTML = '<b>Not</b> logged in';
                       } else {
                           info.innerHTML = 'Logged in with IdentityId: ' + output.identityId + '<br>';
-                          var creds = AWS.config.credentials;
                           creds.params.IdentityId = output.identityId;
                           creds.params.Logins = {
                               'cognito-identity.amazonaws.com': output.token

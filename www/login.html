@@ -29,11 +29,13 @@
 <body>
 <script src="https://sdk.amazonaws.com/js/aws-sdk-2.3.7.min.js"></script>
 <script>
-  AWS.config.region = '<REGION>';
-	AWS.config.credentials = new AWS.CognitoIdentityCredentials({
-    IdentityPoolId: '<IDENTITY_POOL_ID>'
-  });
-  var lambda = new AWS.Lambda();
+    AWS.config.region = '<REGION>';
+    AWS.config.credentials = new AWS.CognitoIdentityCredentials({
+        IdentityPoolId: '<IDENTITY_POOL_ID>'
+    });
+    var lambda = new AWS.Lambda();
+    var creds = AWS.config.credentials;
+    var identityId = creds.params.IdentityId;
 </script>
 <nav class="navbar navbar-inverse">
     <div class="container-fluid">
@@ -47,11 +49,15 @@
         </div>
         <div class="collapse navbar-collapse" id="myNavbar">
             <ul class="nav navbar-nav">
-                <li class="active"><a href="index.html">Home</a></li>
+                <li id="home-nav"><a href="index.html">Home</a></li>
+                <li id="things-nav"><a href="things.html">Things</a></li>
+                <li id="actions-nav"><a href="actions.html">Actions</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
-                <li><a href="settings.html"><span class="glyphicon glyphicon-cog"></span> Settings</a></li>
-                <li><a href="login.html"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+                <li id="settings-nav"><a href="settings.html"><span class="glyphicon glyphicon-cog"></span> Settings</a></li>
+                <li id="signup-nav"><a href="signup.html"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
+                <li id="login-nav"><a href="login.html"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+                <li id="logout-nav"><a href="logout.html"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
             </ul>
         </div>
     </div>
@@ -102,7 +108,6 @@
                           info.innerHTML = '<b>Not</b> logged in';
                       } else {
                           info.innerHTML = 'Logged in with IdentityId: ' + output.identityId + '<br>';
-                          var creds = AWS.config.credentials;
                           creds.params.IdentityId = output.identityId;
                           creds.params.Logins = {
                               'cognito-identity.amazonaws.com': output.token
