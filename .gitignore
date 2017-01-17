@@ -1,4 +1,6 @@
 .chalice/
 .idea/
 venv/
-/*.html
+config.json
+iam/edit/*
+www/edit/*
