@@ -4,3 +4,4 @@ venv/
 config.json
 iam/edit/*
 www/edit/*
+lambda/*/lambda.json

@@ -4,7 +4,6 @@ import json
 from botocore.exceptions import ClientError
 from chalice import NotFoundError
 from boto3.dynamodb.conditions import Key, Attr
-import datetime
 
 REGION = 'us-east-1'
 ITEMS = 'Items'

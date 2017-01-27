@@ -15,11 +15,19 @@
     <!-- Optional theme -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css"
           integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
-
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <!-- Latest compiled and minified JavaScript -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
             integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
             crossorigin="anonymous"></script>
+
+    <script src="assets/jsbn.js"></script>
+    <script src="assets/jsbn2.js"></script>
+    <script src="assets/sjcl.min.js"></script>
+    <script src="assets/moment.min.js"></script>
+    <script src="assets/aws-cognito-sdk.min.js"></script>
+    <script src="assets/amazon-cognito-identity.min.js"></script>
+    <script src="assets/aws-sdk.min.js"></script>
 
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
@@ -27,10 +35,9 @@
 
 </head>
 <body>
-{% include "aws-sdk.jinja2" %}
 {% include "navbar.jinja2" %}
-
 <div id="content">{% block content %}{% endblock %}</div>
-
+<script src="./assets/app.js"></script>
+{% block code %}{% endblock %}
 </body>
 </html>

@@ -1,21 +1,21 @@
 {% extends "base.jinja2" %}
 {% block content %}
 <div class="container">
-    <h1 id="banner">Actions</h1>
+    <h1 id="banner">Snapshots</h1>
     <h4 id="info"><i class="fa fa-refresh fa-spin" style="font-size:24px"></i></h4>
     <div id="result"></div>
 </div>
 {% endblock %}
 {% block code %}
 <script>
-    var input = {};
     var lambda = new AWS.Lambda();
+    var input = {};
     lambda.invoke({
-        FunctionName: 'iotGetActions',
+        FunctionName: 'iotGetSnapshots',
         Payload: JSON.stringify(input)
     }, function(err, data) {
         var result = document.getElementById('result');
-        var result = document.getElementById('info');
+        var info = document.getElementById('info');
         if (err) {
             console.log(err, err.stack);
             info.innerHTML = "<div class='alert alert-danger'><strong>" + err.code + "</strong></div>";
