@@ -37,14 +37,9 @@ echo "Sync lambda content"
 cd lambda
 for f in $(ls -1); do
   echo "Updating function $f begin..."
-	cp ../config.json $f/
   cd $f
-  zip -r $f.zip index.js config.json
-  aws lambda update-function-code --function-name ${f} --zip-file fileb://${f}.zip --region $REGION
-	rm config.json
-	rm $f.zip
+  lambda-uploader
   cd ..
-  echo "Updating function $f end"
 done
 
 # Updating www content

@@ -15,6 +15,24 @@ function logout(){
    window.location = '/';
  };
 
+function timeConverter(UNIX_timestamp){
+  var a = new Date(UNIX_timestamp * 1000);
+  var time = moment(UNIX_timestamp * 1000).format("YYYY/MM/DD h:mm A");
+  return time;
+}
+
+function getParameterByName(name, url) {
+    if (!url) {
+      url = window.location.href;
+    }
+    name = name.replace(/[\[\]]/g, "\\$&");
+    var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+        results = regex.exec(url);
+    if (!results) return null;
+    if (!results[2]) return '';
+    return decodeURIComponent(results[2].replace(/\+/g, " "));
+}
+
 function updateAuthenticationStatus(){
   var user = localStorage.getItem('token');
   if(user){

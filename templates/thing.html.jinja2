@@ -1,7 +1,7 @@
 {% extends "base.jinja2" %}
 {% block content %}
 <div class="container">
-    <h1 id="banner">Things</h1>
+    <h1 id="banner"></h1>
     <h4 id="info"><i class="fa fa-refresh fa-spin" style="font-size:24px"></i></h4>
     <div id="result"></div>
 </div>
@@ -9,9 +9,11 @@
 {% block code %}
 <script>
     var lambda = new AWS.Lambda();
-    var input = {};
+    var input = {"thing": getParameterByName('id')};
+    banner.innerHTML = getParameterByName('id')
+    var output = ""
     lambda.invoke({
-        FunctionName: 'iotGetThings',
+        FunctionName: 'iotGetThing',
         Payload: JSON.stringify(input)
     }, function(err, data) {
         var result = document.getElementById('result');
@@ -19,14 +21,15 @@
         if (err) {
             console.log(err, err.stack);
             info.innerHTML = "<div class='alert alert-danger'><strong>" + err.code + "</strong></div>";
+            result.innerHTML = "";
         }
         else {
-            var output = JSON.parse(data.Payload);
-            var h="<div class='list-group'>";
-            for (var i in output) {
-                h+="<a href='/thing.html?id=" + output[i].thingName + "' class='list-group-item'>" + output[i].thingName + "</a>";
+            output = JSON.parse(data.Payload);
+            var h="<table class='table table-condensed'>";
+            for (var y in output.state.reported) {
+                h+="<tr><td>" + y + "</td><td data-toggle='tooltip' title='" + timeConverter(output.metadata.reported[y].timestamp) + "' >" + output.state.reported[y] + "</td></tr>";
             }
-            h+="</div>";
+            h+="</table>";
             info.innerHTML = "";
             result.innerHTML = h;
         }
