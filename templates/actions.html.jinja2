@@ -14,8 +14,6 @@
         FunctionName: 'iotGetActions',
         Payload: JSON.stringify(input)
     }, function(err, data) {
-        var result = document.getElementById('result');
-        var result = document.getElementById('info');
         if (err) {
             console.log(err, err.stack);
             info.innerHTML = "<div class='alert alert-danger'><strong>" + err.code + "</strong></div>";
@@ -24,12 +22,13 @@
             var output = JSON.parse(data.Payload);
             var h="<div class='list-group'>";
             for (var i in output) {
-                h+="<a href='#' class='list-group-item'>" + output[i].title + "</a>";
+                h+="<a onclick='publish(\"" + output[i].uuid + "\",\"" + output[i].title + "\")' class='list-group-item'>" + output[i].title + "</a>";
             }
             h+="</div>";
             info.innerHTML = "";
             result.innerHTML = h;
         }
     });
+
 </script>
 {% endblock %}

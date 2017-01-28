@@ -13,7 +13,7 @@ $(document).ready(function(){
 function logout(){
    localStorage.clear();
    window.location = '/';
- };
+};
 
 function timeConverter(UNIX_timestamp){
   var a = new Date(UNIX_timestamp * 1000);
@@ -43,6 +43,7 @@ function updateAuthenticationStatus(){
 }
 
 var info = document.getElementById('info');
+var result = document.getElementById('result');
 
 function emptyMenuSet() {
     $('#login-nav').empty();
@@ -71,6 +72,24 @@ function unauthMenuSet() {
     $('#snapshots-nav').hide();
     $('#things-nav').hide();
     $('#login-nav').show().append('<a href="/login.html">Login</a>');
+}
+
+function publish(id, title){
+    var lambda = new AWS.Lambda();
+    var input = {"id": id};
+    lambda.invoke({
+        FunctionName: 'iotPublish',
+        Payload: JSON.stringify(input)
+    }, function(err, data) {
+        if (err) {
+            console.log(err, err.stack);
+            info.innerHTML = "<div class='alert alert-danger'><strong>" + err.code + "</strong></div>";
+            result.innerHTML = "";
+        }
+        else {
+            info.innerHTML = "<div class='alert alert-success'>" + title +"</div>";
+        }
+    });
 }
 
 $('#signin').submit(function(e){
@@ -116,4 +135,10 @@ $('#signin').submit(function(e){
         cognitoUser.completeNewPasswordChallenge(newPassword, userAttributes, this)
     }
   });
+})
+
+$(document).ready(function() {
+    // get current URL path and assign 'active' class
+    var pathname = window.location.pathname;
+    $('.nav > li > a[href="'+pathname+'"]').parent().addClass('active');
 })

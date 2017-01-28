@@ -14,8 +14,6 @@
         FunctionName: 'iotGetSnapshots',
         Payload: JSON.stringify(input)
     }, function(err, data) {
-        var result = document.getElementById('result');
-        var info = document.getElementById('info');
         if (err) {
             console.log(err, err.stack);
             info.innerHTML = "<div class='alert alert-danger'><strong>" + err.code + "</strong></div>";

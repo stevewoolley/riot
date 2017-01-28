@@ -16,8 +16,6 @@
         FunctionName: 'iotGetThing',
         Payload: JSON.stringify(input)
     }, function(err, data) {
-        var result = document.getElementById('result');
-        var info = document.getElementById('info');
         if (err) {
             console.log(err, err.stack);
             info.innerHTML = "<div class='alert alert-danger'><strong>" + err.code + "</strong></div>";
@@ -25,12 +23,16 @@
         }
         else {
             output = JSON.parse(data.Payload);
+            var ts = 0;
             var h="<table class='table table-condensed'>";
             for (var y in output.state.reported) {
-                h+="<tr><td>" + y + "</td><td data-toggle='tooltip' title='" + timeConverter(output.metadata.reported[y].timestamp) + "' >" + output.state.reported[y] + "</td></tr>";
+                if (output.metadata.reported[y].timestamp > ts) {
+                    ts = output.metadata.reported[y].timestamp
+                }
+                h+="<tr><td>" + y + "</td><td>" + output.state.reported[y] + "</td></tr>";
             }
             h+="</table>";
-            info.innerHTML = "";
+            info.innerHTML = "<em>Last Post: " + timeConverter(ts) + "</em>";
             result.innerHTML = h;
         }
     });
