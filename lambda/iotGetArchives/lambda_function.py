@@ -19,4 +19,4 @@ def lambda_handler(event, context):
         o['url'] = s3.generate_presigned_url('get_object', Params={'Bucket': ARCHIVE, 'Key': obj['Key']})
         o['timestamp'] = date_handler(obj['LastModified'])
         results.append(o)
-    return results
+    return sorted(results, key=lambda k: k['name'], reverse=True)
