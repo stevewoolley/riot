@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Snerted</title>
+
+    <meta charset="UTF-8">
+
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css"
+          integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+            integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+            crossorigin="anonymous"></script>
+
+    <script src="assets/jsbn.js"></script>
+    <script src="assets/jsbn2.js"></script>
+    <script src="assets/sjcl.min.js"></script>
+    <script src="assets/moment.min.js"></script>
+    <script src="assets/aws-cognito-sdk.min.js"></script>
+    <script src="assets/amazon-cognito-identity.min.js"></script>
+    <script src="assets/aws-sdk.min.js"></script>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+</head>
+<body>
+<nav class="navbar navbar-inverse">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="index.html">Snerted</a>
+        </div>
+        <div class="collapse navbar-collapse" id="myNavbar">
+            <ul class="nav navbar-nav">
+                <li id="home-nav"><a href="/index.html">Home</a></li>
+                <li id="things-nav"></li>
+                <li id="actions-nav"></li>
+                <li id="snapshots-nav"></li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li id="settings-nav"></li>
+                <li id="login-nav" ></li>
+                <li id="logout-nav"></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<div id="content">
+<script src="assets/Chart.min.js"></script>
+<div class="container">
+    <h1 id="banner"></h1>
+    <h4 id="info"><i class="fa fa-refresh fa-spin" style="font-size:24px"></i></h4>
+    <div id="result"></div>
+</div>
+</div>
+<script src="./assets/app.js"></script>
+
+<script>
+
+    Date.prototype.formatMMDDYYYYHHMM = function() {
+        return (this.getMonth() + 1) +
+        "/" +  this.getDate() +
+        "/" +  this.getFullYear() +
+        " " + this.getHours() +
+        ":" + str_pad(this.getMinutes());
+    }
+
+    function str_pad(n) {
+        return String("00" + n).slice(-2);
+    }
+
+    var lambda = new AWS.Lambda();
+    var metric = getParameterByName('metric');
+    var input = {"thing": getParameterByName('thing'), "metric": metric, "params": {}};
+
+    lambda.invoke({
+        FunctionName: 'iotGetMetrics',
+        Payload: JSON.stringify(input)
+    }, function(err, data) {
+        if (err) {
+            console.log(err, err.stack);
+            info.innerHTML = "<div class='alert alert-danger'><strong>" + err.code + "</strong></div>";
+        }
+        else {
+            var labels = [];
+            var myData = [];
+            var output = JSON.parse(data.Payload);
+
+            for (var i in output) {
+                labels.push(new Date(output[i]['timestamp']).formatMMDDYYYYHHMM());
+                myData.push(output[i][metric].toString());
+            }
+            info.innerHTML = "";
+            result.innerHTML = "<canvas id='myChart'></canvas>";
+            var ctx = document.getElementById("myChart").getContext('2d');
+            var myChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: getParameterByName('thing') + ": " + getParameterByName('metric'),
+                        data : myData,
+                        backgroundColor: "rgba(255,153,0,0.4)",
+                        pointRadius: 0
+                    }]
+                }
+            });
+        }
+    });
+</script>
+
+</body>
+</html>
