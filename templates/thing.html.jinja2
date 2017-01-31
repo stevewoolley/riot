@@ -8,6 +8,10 @@
 {% endblock %}
 {% block code %}
 <script>
+    function isNumeric(n) {
+      return !isNaN(parseFloat(n)) && isFinite(n);
+    }
+
     var lambda = new AWS.Lambda();
     var input = {"thing": getParameterByName('id')};
     banner.innerHTML = getParameterByName('id')
@@ -29,7 +33,15 @@
                 if (output.metadata.reported[y].timestamp > ts) {
                     ts = output.metadata.reported[y].timestamp
                 }
-                h+="<tr><td>" + y + "</td><td>" + output.state.reported[y] + "</td></tr>";
+                h+="<tr>";
+                h+="<td>" + y + "</td>";
+                if (isNumeric(output.state.reported[y])) {
+                    h+="<td><a href='/metricChart.html?thing=" + getParameterByName('id') + "&metric=" + y + "'>" + output.state.reported[y] + "</a></td>";
+                }
+                else {
+                    h+="<td>" + output.state.reported[y] + "</td>";
+                }
+                h+="</tr>";
             }
             h+="</table>";
             info.innerHTML = "<em>Last Post: " + timeConverter(ts) + "</em>";

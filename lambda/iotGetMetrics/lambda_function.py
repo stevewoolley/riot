@@ -8,7 +8,7 @@ SENSORS_PARTITION_KEY = 'source'
 SENSORS_SORT_KEY = 'timestamp'
 SENSORS_PAYLOAD = 'payload'
 PAYLOAD_PREFIX = 'payload.state.reported.{}'
-
+LIMIT=1440
 
 def dict_or(d, k1, k2):
     """used for conditional assignment on a dictionary"""
@@ -53,6 +53,8 @@ def ddb_query(table, response_key, partition_key, partition_value, sort_key=None
             ex["#n{}".format(idx)] = a
             item.append("#n{}".format(idx))
         response = table.query(
+            Limit=LIMIT,
+            ScanIndexForward=False,
             KeyConditionExpression=p_key,
             FilterExpression=Attr(attribute).exists(),
             ExpressionAttributeNames=ex,
@@ -60,6 +62,8 @@ def ddb_query(table, response_key, partition_key, partition_value, sort_key=None
         )
     else:
         response = table.query(
+            Limit=LIMIT,
+            ScanIndexForward=False,
             KeyConditionExpression=p_key
         )
     if response_key in response:
@@ -78,6 +82,6 @@ def ddb_query(table, response_key, partition_key, partition_value, sort_key=None
 
 def lambda_handler(event, context):
     DDB = boto3.resource('dynamodb', region_name=REGION)
-    return ddb_query(DDB.Table(SENSORS_TABLE), ITEMS, SENSORS_PARTITION_KEY, event['thing'], SENSORS_SORT_KEY,
+    return sorted(ddb_query(DDB.Table(SENSORS_TABLE), ITEMS, SENSORS_PARTITION_KEY, event['thing'], SENSORS_SORT_KEY,
                      event['params'],
-                     PAYLOAD_PREFIX.format(event['metric']))
+                     PAYLOAD_PREFIX.format(event['metric'])), key=lambda k: k['timestamp'])

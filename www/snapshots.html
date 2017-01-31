@@ -28,7 +28,6 @@
     <script src="assets/aws-cognito-sdk.min.js"></script>
     <script src="assets/amazon-cognito-identity.min.js"></script>
     <script src="assets/aws-sdk.min.js"></script>
-
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -71,6 +70,9 @@
 
 <script>
     var lambda = new AWS.Lambda();
+    function str_pad(n) {
+        return String("00" + n).slice(-2);
+    }
     var input = {};
     lambda.invoke({
         FunctionName: 'iotGetSnapshots',
@@ -82,10 +84,13 @@
         }
         else {
             var output = JSON.parse(data.Payload);
-            var h="<div>";
+            var h = "<div>";
+            var d = new Date();
             for (var i in output) {
-                h+="<a href='/archives.html?prefix=" + output[i].name.split(".")[0] + "'>"
-                h+="<img class='img-responsive' src='" + output[i].url + "' alt='" + output[i].name + "'>"
+                h+="<a href='/archives.html?prefix=" + output[i].name.split(".")[0];
+                h+="_" + d.getFullYear() + "-" + str_pad(d.getMonth() + 1) + "-" + str_pad(d.getDate()) + "-";
+                h+="'>";
+                h+="<img class='img-responsive' src='" + output[i].url + "' alt='" + output[i].name + "'>";
                 h+="</a>";
             }
             h+="</div>";

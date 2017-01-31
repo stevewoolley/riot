@@ -1,0 +1,64 @@
+{% extends "base.jinja2" %}
+{% block content %}
+<script src="assets/Chart.min.js"></script>
+<div class="container">
+    <h1 id="banner"></h1>
+    <h4 id="info"><i class="fa fa-refresh fa-spin" style="font-size:24px"></i></h4>
+    <div id="result"></div>
+</div>
+{% endblock %}
+{% block code %}
+<script>
+
+    Date.prototype.formatMMDDYYYYHHMM = function() {
+        return (this.getMonth() + 1) +
+        "/" +  this.getDate() +
+        "/" +  this.getFullYear() +
+        " " + this.getHours() +
+        ":" + str_pad(this.getMinutes());
+    }
+
+    function str_pad(n) {
+        return String("00" + n).slice(-2);
+    }
+
+    var lambda = new AWS.Lambda();
+    var metric = getParameterByName('metric');
+    var input = {"thing": getParameterByName('thing'), "metric": metric, "params": {}};
+
+    lambda.invoke({
+        FunctionName: 'iotGetMetrics',
+        Payload: JSON.stringify(input)
+    }, function(err, data) {
+        if (err) {
+            console.log(err, err.stack);
+            info.innerHTML = "<div class='alert alert-danger'><strong>" + err.code + "</strong></div>";
+        }
+        else {
+            var labels = [];
+            var myData = [];
+            var output = JSON.parse(data.Payload);
+
+            for (var i in output) {
+                labels.push(new Date(output[i]['timestamp']).formatMMDDYYYYHHMM());
+                myData.push(output[i][metric].toString());
+            }
+            info.innerHTML = "";
+            result.innerHTML = "<canvas id='myChart'></canvas>";
+            var ctx = document.getElementById("myChart").getContext('2d');
+            var myChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: getParameterByName('thing') + ": " + getParameterByName('metric'),
+                        data : myData,
+                        backgroundColor: "rgba(255,153,0,0.4)",
+                        pointRadius: 0
+                    }]
+                }
+            });
+        }
+    });
+</script>
+{% endblock %}
