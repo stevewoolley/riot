@@ -12,6 +12,19 @@
       return !isNaN(parseFloat(n)) && isFinite(n);
     }
 
+    function isFloat(n){
+        return Number(n) === n && n % 1 !== 0;
+    }
+
+    function pretty_numeric(n) {
+        if (isFloat(n)) {
+            return n.toFixed(2);
+        }
+        else {
+            return n;
+        }
+    }
+
     var lambda = new AWS.Lambda();
     var input = {"thing": getParameterByName('id')};
     banner.innerHTML = getParameterByName('id')
@@ -36,11 +49,12 @@
                 h+="<tr>";
                 h+="<td>" + y + "</td>";
                 if (isNumeric(output.state.reported[y])) {
-                    h+="<td><a href='/metricChart.html?thing=" + getParameterByName('id') + "&metric=" + y + "'>" + output.state.reported[y] + "</a></td>";
+                    h+="<td><a href='/metricChart.html?thing=" + getParameterByName('id') + "&metric=" + y + "'>" + pretty_numeric(output.state.reported[y]) + "</a></td>";
                 }
                 else {
                     h+="<td>" + output.state.reported[y] + "</td>";
                 }
+                h+="<td>" + timeConverter(output.metadata.reported[y].timestamp) + "</td>";
                 h+="</tr>";
             }
             h+="</table>";
