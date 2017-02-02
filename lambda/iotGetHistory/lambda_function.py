@@ -10,7 +10,7 @@ SENSORS_PARTITION_KEY = 'source'
 SENSORS_SORT_KEY = 'timestamp'
 SENSORS_PAYLOAD = 'payload'
 PAYLOAD_PREFIX = 'payload.state.reported.{}'
-LIMIT = 100
+LIMIT = 1500
 SCAN_INDEX_FORWARD = False
 
 

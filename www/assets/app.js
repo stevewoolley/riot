@@ -19,7 +19,24 @@ function timeConverter(UNIX_timestamp){
   var a = new Date(UNIX_timestamp * 1000);
   var time = moment(UNIX_timestamp * 1000).format("YYYY/MM/DD h:mm A");
   return time;
-}
+};
+
+function isNumeric(n) {
+  return !isNaN(parseFloat(n)) && isFinite(n);
+};
+
+function isFloat(n){
+    return Number(n) === n && n % 1 !== 0;
+};
+
+function pretty_numeric(n) {
+    if (isFloat(n)) {
+        return n.toFixed(2);
+    }
+    else {
+        return n;
+    }
+};
 
 function getParameterByName(name, url) {
     if (!url) {
@@ -31,7 +48,7 @@ function getParameterByName(name, url) {
     if (!results) return null;
     if (!results[2]) return '';
     return decodeURIComponent(results[2].replace(/\+/g, " "));
-}
+};
 
 function updateAuthenticationStatus(){
   var user = localStorage.getItem('token');
@@ -40,7 +57,7 @@ function updateAuthenticationStatus(){
   } else {
     unauthMenuSet();
   }
-}
+};
 
 var info = document.getElementById('info');
 var result = document.getElementById('result');

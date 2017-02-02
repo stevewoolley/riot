@@ -70,40 +70,38 @@
 
 <script>
     var lambda = new AWS.Lambda();
-    var input = {"thing": getParameterByName('id')};
-    banner.innerHTML = getParameterByName('id')
-    var output = ""
+    var metric = getParameterByName('metric');
+    var input = {"thing": getParameterByName('thing'), "metric": metric, "params": {}};
+    banner.innerHTML = getParameterByName('thing') + ": " + metric;
+
     lambda.invoke({
-        FunctionName: 'iotGetThing',
+        FunctionName: 'iotGetHistory',
         Payload: JSON.stringify(input)
     }, function(err, data) {
         if (err) {
             console.log(err, err.stack);
             info.innerHTML = "<div class='alert alert-danger'><strong>" + err.code + "</strong></div>";
-            result.innerHTML = "";
         }
         else {
-            output = JSON.parse(data.Payload);
+            var output = JSON.parse(data.Payload);
             var ts = 0;
             var h="<table class='table table-condensed'>";
-            for (var y in output.state.reported) {
-                if (output.metadata.reported[y].timestamp > ts) {
-                    ts = output.metadata.reported[y].timestamp
+            for (var y in output) {
+                if (output[y].timestamp / 1000 > ts) {
+                    ts = output[y].timestamp / 1000;
                 }
                 h+="<tr>";
-                h+="<td>" + y + "</td>";
-                if (isNumeric(output.state.reported[y])) {
-                    h+="<td><a href='/metricChart.html?thing=" + getParameterByName('id') + "&metric=" + y + "'>" + pretty_numeric(output.state.reported[y]) + "</a></td>";
+                h+="<td>" + timeConverter(output[y].timestamp / 1000) + "</td>";
+                if (isNumeric(output[y][metric])) {
+                    h+="<td>" + pretty_numeric(output[y][metric]) + "</td>";
                 }
                 else {
-                    h+="<td>" + output.state.reported[y] + "</td>";
+                    h+="<td>" + output[y][metric] + "</td>";
                 }
-                h+="<td>" + timeConverter(output.metadata.reported[y].timestamp) + "</td>";
-                h+="<td><a href='/metricHistory.html?thing=" + getParameterByName('id') + "&metric=" + y + "'><span class='glyphicon glyphicon-time'></span></a></td>";
                 h+="</tr>";
             }
             h+="</table>";
-            info.innerHTML = "<em>Last Post: " + timeConverter(ts) + "</em>";
+            info.innerHTML = "";
             result.innerHTML = h;
         }
     });

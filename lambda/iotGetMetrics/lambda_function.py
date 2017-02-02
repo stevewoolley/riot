@@ -8,7 +8,7 @@ SENSORS_PARTITION_KEY = 'source'
 SENSORS_SORT_KEY = 'timestamp'
 SENSORS_PAYLOAD = 'payload'
 PAYLOAD_PREFIX = 'payload.state.reported.{}'
-LIMIT = 1440
+LIMIT = 1500
 
 
 def dict_or(d, k1, k2):
