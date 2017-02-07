@@ -32,13 +32,13 @@
                 h+="<tr>";
                 h+="<td>" + y + "</td>";
                 if (isNumeric(output.state.reported[y])) {
-                    h+="<td><a href='/metricChart.html?thing=" + getParameterByName('id') + "&metric=" + y + "'>" + pretty_numeric(output.state.reported[y]) + "</a></td>";
+                    h+="<td><a href='metricChart.html?thing=" + getParameterByName('id') + "&metric=" + y + "'>" + pretty_numeric(output.state.reported[y]) + "</a></td>";
                 }
                 else {
                     h+="<td>" + output.state.reported[y] + "</td>";
                 }
                 h+="<td>" + timeConverter(output.metadata.reported[y].timestamp) + "</td>";
-                h+="<td><a href='/metricHistory.html?thing=" + getParameterByName('id') + "&metric=" + y + "'><span class='glyphicon glyphicon-time'></span></a></td>";
+                h+="<td><a href='metricHistory.html?thing=" + getParameterByName('id') + "&metric=" + y + "'><span class='glyphicon glyphicon-time'></span></a></td>";
                 h+="</tr>";
             }
             h+="</table>";

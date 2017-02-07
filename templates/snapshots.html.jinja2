@@ -26,7 +26,7 @@
             var h = "<div>";
             var d = new Date();
             for (var i in output) {
-                h+="<a href='/archives.html?prefix=" + output[i].name.split(".")[0];
+                h+="<a href='archives.html?prefix=" + output[i].name.split(".")[0];
                 h+="_" + d.getFullYear() + "-" + str_pad(d.getMonth() + 1) + "-" + str_pad(d.getDate()) + "-";
                 h+="'>";
                 h+="<img class='img-responsive' src='" + output[i].url + "' alt='" + output[i].name + "'>";

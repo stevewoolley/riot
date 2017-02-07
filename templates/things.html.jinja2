@@ -22,7 +22,7 @@
             var output = JSON.parse(data.Payload);
             var h="<div class='list-group'>";
             for (var i in output) {
-                h+="<a href='/thing.html?id=" + output[i].thingName + "' class='list-group-item'>" + output[i].thingName + "</a>";
+                h+="<a href='thing.html?id=" + output[i].thingName + "' class='list-group-item'>" + output[i].thingName + "</a>";
             }
             h+="</div>";
             info.innerHTML = "";
