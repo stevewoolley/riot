@@ -7,4 +7,4 @@ ITEMS = 'Items'
 
 def lambda_handler(event, context):
     DDB = boto3.resource('dynamodb', region_name=REGION)
-    return DDB.Table('actions').scan()[ITEMS]
+    return DDB.Table('triggers').scan()[ITEMS]

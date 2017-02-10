@@ -78,13 +78,25 @@
     }, function(err, data) {
         if (err) {
             console.log(err, err.stack);
-            info.innerHTML = "<div class='alert alert-danger'><strong>" + err.code + "</strong></div>";
+            if (err.code == 'CredentialsError') {
+                logout();
+            }
+            else {
+                info.innerHTML = "<div class='alert alert-danger'><strong>" + err.code + "</strong></div>";
+            }
         }
         else {
             var output = JSON.parse(data.Payload);
             var h="<div class='list-group'>";
             for (var i in output) {
-                h+="<a onclick='publish(\"" + output[i].uuid + "\",\"" + output[i].title + "\")' class='list-group-item'>" + output[i].title + "</a>";
+                h += "<a onclick='publish(\"";
+                h += output[i].key;
+                h += "\",\"";
+                h += output[i].title;
+                h += "\")' class='list-group-item'>";
+                h += "<span class='glyphicon glyphicon-" + output[i].icon + "'></span> ";
+                h += output[i].title;
+                h += "</a>";
             }
             h+="</div>";
             info.innerHTML = "";

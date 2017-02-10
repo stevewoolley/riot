@@ -102,9 +102,9 @@ function unauthMenuSet() {
     $('#login-nav').show().append('<a href="login.html">Login</a>');
 }
 
-function publish(id, title) {
+function publish(key, title) {
     var lambda = new AWS.Lambda();
-    var input = {"id": id};
+    var input = {"key": key};
     lambda.invoke({
         FunctionName: 'iotPublish',
         Payload: JSON.stringify(input)
