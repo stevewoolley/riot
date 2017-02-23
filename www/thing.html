@@ -85,7 +85,10 @@
             }
             else {
                 info.innerHTML = "<div class='alert alert-danger'><strong>" + err.code + "</strong></div>";
+                result.innerHTML = "";
             }
+
+
         }
         else {
             output = JSON.parse(data.Payload);

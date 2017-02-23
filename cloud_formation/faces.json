@@ -6,29 +6,20 @@
       "Properties": {
         "AttributeDefinitions": [
           {
-            "AttributeName": "key",
-            "AttributeType": "S"
-          },
-          {
-            "AttributeName": "title",
+            "AttributeName": "id",
             "AttributeType": "S"
           }
         ],
         "KeySchema": [
           {
-            "AttributeName": "key",
+            "AttributeName": "id",
             "KeyType": "HASH"
-          },
-          {
-            "AttributeName": "title",
-            "KeyType": "RANGE"
-          }
-        ],
+          }        ],
         "ProvisionedThroughput": {
           "ReadCapacityUnits": "5",
           "WriteCapacityUnits": "5"
         },
-        "TableName": "triggers"
+        "TableName": "faces"
       }
     }
   }

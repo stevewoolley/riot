@@ -18,8 +18,15 @@
     }, function(err, data) {
         if (err) {
             console.log(err, err.stack);
-            info.innerHTML = "<div class='alert alert-danger'><strong>" + err.code + "</strong></div>";
-            result.innerHTML = "";
+            if (err.code == 'CredentialsError') {
+                logout();
+            }
+            else {
+                info.innerHTML = "<div class='alert alert-danger'><strong>" + err.code + "</strong></div>";
+                result.innerHTML = "";
+            }
+
+
         }
         else {
             output = JSON.parse(data.Payload);
