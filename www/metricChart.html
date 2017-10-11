@@ -46,7 +46,7 @@
         </div>
         <div class="collapse navbar-collapse" id="myNavbar">
             <ul class="nav navbar-nav">
-                <li id="home-nav"><a href="index.html">Home</a></li>
+                <li id="movies-nav"><a href="movies.html">Movies</a></li>
                 <li id="things-nav"></li>
                 <li id="actions-nav"></li>
                 <li id="snapshots-nav"></li>
@@ -61,23 +61,24 @@
 </nav>
 
 <div id="content">
-<script src="assets/Chart.min.js"></script>
-<div class="container">
-    <h1 id="banner"></h1>
-    <h4 id="info"><i class="fa fa-refresh fa-spin" style="font-size:24px"></i></h4>
-    <div id="result"></div>
-</div>
+    <!-- Chart.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.0/Chart.min.js"></script>
+    <div class="container">
+        <h1 id="banner"></h1>
+        <h4 id="info"><i class="fa fa-refresh fa-spin" style="font-size:24px"></i></h4>
+        <div id="result"></div>
+    </div>
 </div>
 <script src="assets/app.js"></script>
 
 <script>
 
-    Date.prototype.formatMMDDYYYYHHMM = function() {
+    Date.prototype.formatMMDDYYYYHHMM = function () {
         return (this.getMonth() + 1) +
-        "/" +  this.getDate() +
-        "/" +  this.getFullYear() +
-        " " + this.getHours() +
-        ":" + str_pad(this.getMinutes());
+            "/" + this.getDate() +
+            "/" + this.getFullYear() +
+            " " + this.getHours() +
+            ":" + str_pad(this.getMinutes());
     }
 
     function str_pad(n) {
@@ -91,7 +92,7 @@
     lambda.invoke({
         FunctionName: 'iotGetMetrics',
         Payload: JSON.stringify(input)
-    }, function(err, data) {
+    }, function (err, data) {
         if (err) {
             console.log(err, err.stack);
             if (err.code == 'CredentialsError') {
@@ -119,11 +120,29 @@
                     labels: labels,
                     datasets: [{
                         label: getParameterByName('thing') + ": " + getParameterByName('metric'),
-                        data : myData,
-                        backgroundColor: "rgba(255,153,0,0.4)",
-                        pointRadius: 0
+                        data: myData,
+                        backgroundColor: "rgba(251, 85, 85, 0.4)",
+                        pointRadius: 1
                     }]
+                },
+                options: {
+                    elements: {
+                        line: {
+                            tension: 0, // disables bezier curves
+                        }
+                    },
+                    scales: {
+                        xAxes: [{
+                            type: 'time',
+                            time: {
+                                displayFormats: {
+                                    quarter: 'MMM D'
+                                }
+                            }
+                        }]
+                    }
                 }
+
             });
         }
     });

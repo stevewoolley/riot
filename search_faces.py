@@ -19,6 +19,7 @@ def search_known_faceid(f):
                 hits[record[0]['name']] = 1
     return hits
 
+
 if __name__ == "__main__":
     # parse arguments
     parser = argparse.ArgumentParser()
@@ -34,6 +35,3 @@ if __name__ == "__main__":
         FaceId=args.faceId
     )
     pprint.pprint(search_known_faceid(response))
-
-
-

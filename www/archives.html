@@ -46,7 +46,7 @@
         </div>
         <div class="collapse navbar-collapse" id="myNavbar">
             <ul class="nav navbar-nav">
-                <li id="home-nav"><a href="index.html">Home</a></li>
+                <li id="movies-nav"><a href="movies.html">Movies</a></li>
                 <li id="things-nav"></li>
                 <li id="actions-nav"></li>
                 <li id="snapshots-nav"></li>
@@ -90,7 +90,7 @@
             var output = JSON.parse(data.Payload);
             var h="<div class='list-group'>";
             for (var i in output) {
-                h+="<a href='" + output[i].url + "' class='list-group-item'>" + output[i].name + "</a>";
+                h+="<a href='" + output[i].url + "' class='list-group-item'>" + output[i].name + " (" + output[i].size + ")</a>";
             }
             h+="</div>";
             info.innerHTML = "";

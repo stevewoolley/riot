@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 
 import boto3
-import pprint
 import argparse
 from boto3.dynamodb.conditions import Key
 

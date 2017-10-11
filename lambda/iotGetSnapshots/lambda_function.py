@@ -20,3 +20,14 @@ def lambda_handler(event, context):
         o['timestamp'] = date_handler(obj['LastModified'])
         results.append(o)
     return results
+#
+#
+# results = []
+# for obj in s3.list_objects_v2(Bucket=SNAPSHOTS, Prefix='pi3-', MaxKeys=10)['Contents']:
+#     o = dict()
+#     o['name'] = obj['Key']
+#     o['url'] = s3.generate_presigned_url('get_object', Params={'Bucket': SNAPSHOTS, 'Key': obj['Key']})
+#     o['timestamp'] = date_handler(obj['LastModified'])
+#     results.append(o)
+#
+# print(results)

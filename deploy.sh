@@ -38,7 +38,15 @@ cd lambda
 for f in $(ls -1); do
   echo "Updating function $f begin..."
   cd $f
-  lambda-uploader
+  bin=""
+  if [ -d "bin" ]; then
+    cd bin
+    for bf in $(ls -1); do
+        bin+="--extra-file bin/$bf"
+    done
+    cd ..
+  fi
+  lambda-uploader $bin
   cd ..
 done
 

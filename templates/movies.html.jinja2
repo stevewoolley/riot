@@ -1,0 +1,42 @@
+{% extends "base.jinja2" %}
+{% block content %}
+<div class="container">
+    <h1 id="banner">Movies <a class="btn btn-default" href="/disclaimer.html" role="button">Disclaimer</a></h1>
+    <h4 id="info"><i class="fa fa-refresh fa-spin" style="font-size:24px"></i></h4>
+    <div id="result"></div>
+</div>
+{% endblock %}
+{% block code %}
+<script>
+    function Get(yourUrl) {
+        var Httpreq = new XMLHttpRequest(); // a new request
+        Httpreq.open("GET", yourUrl, false);
+        Httpreq.send(null);
+        return Httpreq.responseText;
+    }
+    var output = JSON.parse(Get('https://81247tnlu8.execute-api.us-east-1.amazonaws.com/prod/movies'));
+    var h = "<div class='list-group'>";
+    y = 0;
+    for (var i in output) {
+        if (output[i].year != y) {
+            if (y != 0) {
+                h += "</div>";
+                h += "</div>";
+            }
+            h += "<div class='list-group-item'>";
+            h += "<h4 class='list-group-item-heading'>";
+            h += output[i].year;
+            h += "</h4>";
+            h += "<div class='list-group-item-text'>";
+            y = output[i].year;
+        }
+        h += "<p><a href='http://www.imdb.com/title/" + output[i].id + "'>" + output[i].title + "</a></p>";
+    }
+    h += "</div>";
+    h += "</div>";
+    h += "</div>";
+    info.innerHTML = "";
+    result.innerHTML = h;
+
+</script>
+{% endblock %}

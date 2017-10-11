@@ -62,7 +62,7 @@
 
 <div id="content">
 <div class="container">
-    <h1 id="banner">Actions</h1>
+    <h1 id="banner">Movies <a class="btn btn-default" href="/disclaimer.html" role="button">Disclaimer</a></h1>
     <h4 id="info"><i class="fa fa-refresh fa-spin" style="font-size:24px"></i></h4>
     <div id="result"></div>
 </div>
@@ -70,39 +70,35 @@
 <script src="assets/app.js"></script>
 
 <script>
-    var input = {};
-    var lambda = new AWS.Lambda();
-    lambda.invoke({
-        FunctionName: 'iotGetActions',
-        Payload: JSON.stringify(input)
-    }, function(err, data) {
-        if (err) {
-            console.log(err, err.stack);
-            if (err.code == 'CredentialsError') {
-                logout();
+    function Get(yourUrl) {
+        var Httpreq = new XMLHttpRequest(); // a new request
+        Httpreq.open("GET", yourUrl, false);
+        Httpreq.send(null);
+        return Httpreq.responseText;
+    }
+    var output = JSON.parse(Get('https://81247tnlu8.execute-api.us-east-1.amazonaws.com/prod/movies'));
+    var h = "<div class='list-group'>";
+    y = 0;
+    for (var i in output) {
+        if (output[i].year != y) {
+            if (y != 0) {
+                h += "</div>";
+                h += "</div>";
             }
-            else {
-                info.innerHTML = "<div class='alert alert-danger'><strong>" + err.code + "</strong></div>";
-            }
+            h += "<div class='list-group-item'>";
+            h += "<h4 class='list-group-item-heading'>";
+            h += output[i].year;
+            h += "</h4>";
+            h += "<div class='list-group-item-text'>";
+            y = output[i].year;
         }
-        else {
-            var output = JSON.parse(data.Payload);
-            var h="<div class='list-group'>";
-            for (var i in output) {
-                h += "<a onclick='publish(\"";
-                h += output[i].key;
-                h += "\",\"";
-                h += output[i].title;
-                h += "\")' class='list-group-item'>";
-                h += "<span class='glyphicon glyphicon-" + output[i].icon + "'></span> ";
-                h += output[i].title;
-                h += "</a>";
-            }
-            h+="</div>";
-            info.innerHTML = "";
-            result.innerHTML = h;
-        }
-    });
+        h += "<p><a href='http://www.imdb.com/title/" + output[i].id + "'>" + output[i].title + "</a></p>";
+    }
+    h += "</div>";
+    h += "</div>";
+    h += "</div>";
+    info.innerHTML = "";
+    result.innerHTML = h;
 
 </script>
 
