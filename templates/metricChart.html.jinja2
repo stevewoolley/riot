@@ -57,11 +57,29 @@
                     labels: labels,
                     datasets: [{
                         label: getParameterByName('thing') + ": " + getParameterByName('metric'),
-                        data : myData,
-                        backgroundColor: "rgba(255,153,0,0.4)",
-                        pointRadius: 0
+                        data: myData,
+                        backgroundColor: "rgba(251, 85, 85, 0.4)",
+                        pointRadius: 1
                     }]
+                },
+                options: {
+                    elements: {
+                        line: {
+                            tension: 0, // disables bezier curves
+                        }
+                    },
+                    scales: {
+                        xAxes: [{
+                            type: 'time',
+                            time: {
+                                displayFormats: {
+                                    quarter: 'MMM D'
+                                }
+                            }
+                        }]
+                    }
                 }
+
             });
         }
     });

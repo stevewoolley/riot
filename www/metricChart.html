@@ -61,24 +61,23 @@
 </nav>
 
 <div id="content">
-    <!-- Chart.js -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.0/Chart.min.js"></script>
-    <div class="container">
-        <h1 id="banner"></h1>
-        <h4 id="info"><i class="fa fa-refresh fa-spin" style="font-size:24px"></i></h4>
-        <div id="result"></div>
-    </div>
+<script src="assets/Chart.min.js"></script>
+<div class="container">
+    <h1 id="banner"></h1>
+    <h4 id="info"><i class="fa fa-refresh fa-spin" style="font-size:24px"></i></h4>
+    <div id="result"></div>
+</div>
 </div>
 <script src="assets/app.js"></script>
 
 <script>
 
-    Date.prototype.formatMMDDYYYYHHMM = function () {
+    Date.prototype.formatMMDDYYYYHHMM = function() {
         return (this.getMonth() + 1) +
-            "/" + this.getDate() +
-            "/" + this.getFullYear() +
-            " " + this.getHours() +
-            ":" + str_pad(this.getMinutes());
+        "/" +  this.getDate() +
+        "/" +  this.getFullYear() +
+        " " + this.getHours() +
+        ":" + str_pad(this.getMinutes());
     }
 
     function str_pad(n) {
@@ -92,7 +91,7 @@
     lambda.invoke({
         FunctionName: 'iotGetMetrics',
         Payload: JSON.stringify(input)
-    }, function (err, data) {
+    }, function(err, data) {
         if (err) {
             console.log(err, err.stack);
             if (err.code == 'CredentialsError') {

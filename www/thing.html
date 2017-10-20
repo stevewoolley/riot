@@ -61,61 +61,127 @@
 </nav>
 
 <div id="content">
-<div class="container">
-    <h1 id="banner"></h1>
-    <h4 id="info"><i class="fa fa-refresh fa-spin" style="font-size:24px"></i></h4>
-    <div id="result"></div>
-</div>
+    <div class="container">
+        <h1 id="banner"></h1>
+        <h4 id="info"><i class="fa fa-refresh fa-spin" style="font-size:24px"></i></h4>
+        <div id="result"></div>
+    </div>
 </div>
 <script src="assets/app.js"></script>
 
-<script>
-    var lambda = new AWS.Lambda();
-    var input = {"thing": getParameterByName('id')};
-    banner.innerHTML = getParameterByName('id')
-    var output = ""
-    lambda.invoke({
-        FunctionName: 'iotGetThing',
-        Payload: JSON.stringify(input)
-    }, function(err, data) {
-        if (err) {
-            console.log(err, err.stack);
-            if (err.code == 'CredentialsError') {
-                logout();
-            }
-            else {
-                info.innerHTML = "<div class='alert alert-danger'><strong>" + err.code + "</strong></div>";
-                result.innerHTML = "";
-            }
-
-
-        }
-        else {
-            output = JSON.parse(data.Payload);
-            var ts = 0;
-            var h="<table class='table table-condensed'>";
-            for (var y in output.state.reported) {
-                if (output.metadata.reported[y].timestamp > ts) {
-                    ts = output.metadata.reported[y].timestamp
-                }
-                h+="<tr>";
-                h+="<td>" + y + "</td>";
-                if (isNumeric(output.state.reported[y])) {
-                    h+="<td><a href='metricChart.html?thing=" + getParameterByName('id') + "&metric=" + y + "'>" + pretty_numeric(output.state.reported[y]) + "</a></td>";
+    <script>
+        var lambda = new AWS.Lambda();
+        var input = {"thing": getParameterByName('id')};
+        banner.innerHTML = getParameterByName('id')
+        var output = ""
+        lambda.invoke({
+            FunctionName: 'iotGetThing',
+            Payload: JSON.stringify(input)
+        }, function (err, data) {
+            if (err) {
+                console.log(err, err.stack);
+                if (err.code == 'CredentialsError') {
+                    logout();
                 }
                 else {
-                    h+="<td>" + output.state.reported[y] + "</td>";
+                    info.innerHTML = "<div class='alert alert-danger'><strong>" + err.code + "</strong></div>";
+                    result.innerHTML = "";
                 }
-                h+="<td>" + timeConverter(output.metadata.reported[y].timestamp) + "</td>";
-                h+="<td><a href='metricHistory.html?thing=" + getParameterByName('id') + "&metric=" + y + "'><span class='glyphicon glyphicon-time'></span></a></td>";
-                h+="</tr>";
+
+
             }
-            h+="</table>";
-            info.innerHTML = "<em>Last Post: " + timeConverter(ts) + "</em>";
-            result.innerHTML = h;
-        }
-    });
-</script>
+            else {
+                output = JSON.parse(data.Payload);
+                var ts = 0;
+                var h = "<table class='table table-condensed'>";
+                for (var y in output.state.reported) {
+                    if (output.metadata.reported[y].timestamp > ts) {
+                        ts = output.metadata.reported[y].timestamp
+                    }
+                    // row
+                    h += "<tr>";
+                    // key
+                    h += "<td>" + y + "</td>";
+                    // value
+                    if (isNumeric(output.state.reported[y])) {
+                        h += "<td><a href='metricChart.html?thing=" + getParameterByName('id') + "&metric=" + y + "'>" + pretty_numeric(output.state.reported[y]) + "</a></td>";
+                    }
+                    else {
+                        h += "<td>";
+                        if (jQuery.isArray(output.state.reported[y])) {
+                            // TABLE HEADER
+                            var col = [];
+                            for (var i = 0; i < output.state.reported[y].length; i++) {
+                                for (var key in output.state.reported[y][i]) {
+                                    if (col.indexOf(key) === -1) {
+                                        col.push(key);
+                                    }
+                                }
+                            }
+                            // CREATE DYNAMIC TABLE
+                            var table = document.createElement("table");
+                            table.className = 'table';
+                            // CREATE HTML TABLE HEADER ROW USING THE EXTRACTED HEADERS ABOVE.
+                            var tr = table.insertRow(-1);                   // TABLE ROW.
+                            for (var i = 0; i < col.length; i++) {
+                                var th = document.createElement("th");      // TABLE HEADER.
+                                th.innerHTML = col[i];
+                                tr.appendChild(th);
+                            }
+                            // ADD JSON DATA TO THE TABLE AS ROWS.
+                            for (var i = 0; i < output.state.reported[y].length; i++) {
+                                tr = table.insertRow(-1);
+                                for (var j = 0; j < col.length; j++) {
+                                    var tabCell = tr.insertCell(-1);
+                                    tabCell.innerHTML = output.state.reported[y][i][col[j]];
+                                }
+                            }
+                            // END TABLE
+                            h += "<button type='button' class='btn btn-primary btn-xs' data-toggle='modal' data-target='." + y + "-modal" + "'>detail</button>"
+                            h += "<div class='modal fade " + y + "-modal" + "' tabindex='-1' role='dialog' aria-labelledby='myLargeModalLabel'>"
+                            h += "<div class='modal-dialog modal-lg' role='document'>"
+                            h += "  <div class='modal-content'>"
+                            h += table.outerHTML
+                            h += "  </div>"
+                            h += "</div>"
+                            h += "</div>"
+                        }
+                        else {
+                            h += output.state.reported[y];
+                        }
+                        h += "</td>";
+                    }
+                    // timestamp
+                    h += "<td>";
+                    var meta = output.metadata.reported[y];
+                    if (jQuery.isArray(meta)) {
+                        var tmstmp = 0;
+                        for (var mi = 0; mi < meta.length; mi++) {
+                            for (var my in meta[mi]) {
+                                if (meta[mi][my].timestamp > tmstmp) {
+                                    tmstmp = meta[mi][my].timestamp;
+                                }
+                            }
+                        }
+                        h += timeConverter(tmstmp);
+                    }
+                    else if (meta.timestamp === undefined) {
+                    }
+                    else {
+                        h += timeConverter(meta.timestamp);
+                    }
+                    h += "</td>";
+                    // history
+                    h += "<td><a href='metricHistory.html?thing=" + getParameterByName('id') + "&metric=" + y + "'><span class='glyphicon glyphicon-time'></span></a></td>";
+                    // end row
+                    h += "</tr>";
+                }
+                h += "</table>";
+                info.innerHTML = "<em>Last Post: " + timeConverter(ts) + "</em>";
+                result.innerHTML = h;
+            }
+        });
+    </script>
 
 </body>
 </html>
