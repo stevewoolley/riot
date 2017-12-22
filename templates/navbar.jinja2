@@ -1,26 +1,23 @@
-<nav class="navbar navbar-inverse">
-    <div class="container-fluid">
-        <div class="navbar-header">
-            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-            <a class="navbar-brand" href="index.html">{{ SITE_NAME }}</a>
-        </div>
-        <div class="collapse navbar-collapse" id="myNavbar">
-            <ul class="nav navbar-nav">
-                <li id="movies-nav"><a href="movies.html">Movies</a></li>
-                <li id="things-nav"></li>
-                <li id="actions-nav"></li>
-                <li id="snapshots-nav"></li>
+<header>
+    <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+        <a class="navbar-brand" href="#">{{ SITE_NAME }}</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li id="movies-nav" class="nav-item"><a class="nav-link" href="movies.html">Movies</a></li>
+                <li id="things-nav" class="nav-item"></li>
+                <li id="actions-nav" class="nav-item"></li>
+                <li id="snapshots-nav" class="nav-item"></li>
             </ul>
-            <ul class="nav navbar-nav navbar-right">
+            <ul class="navbar-nav navbar-right">
                 <li id="settings-nav"></li>
                 <li id="login-nav"></li>
                 <li id="logout-nav"></li>
             </ul>
         </div>
-    </div>
-</nav>
-
+    </nav>
+</header>

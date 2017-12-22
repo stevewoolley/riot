@@ -1,14 +1,10 @@
 {% extends "base.jinja2" %}
 
 {% block content %}
-<div class="container">
-
-    <h1 id="banner">Settings</h1>
-    <h4 id="info"></h4>
-	<div class="list-group">
-		<a class="list-group-item" href="changePassword.html">Change Password</a>
-		<a class="list-group-item" href="lostPassword.html">Password Lost</a>
-	</div>
-
+<h1 class="bd-title" id="banner">Settings</h1>
+<h4 id="info"></h4>
+<div class="list-group">
+    <a class="list-group-item list-group-item-action" href="changePassword.html">Change Password</a>
+    <a class="list-group-item list-group-item-action" href="lostPassword.html">Password Lost</a>
 </div>
 {% endblock %}

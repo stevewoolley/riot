@@ -85,21 +85,21 @@ function emptyMenuSet() {
 function authMenuSet() {
     emptyMenuSet();
     $('#login-nav').hide();
-    $('#settings-nav').show().append('<a href="settings.html"><span class="glyphicon glyphicon-cog"></span> ' + cognitoUser.username + '</a>');
-    $('#actions-nav').show().append('<a href="actions.html">Actions</a>');
-    $('#snapshots-nav').show().append('<a href="snapshots.html">Snapshots</a>');
-    $('#things-nav').show().append('<a href="things.html">Things</a>');
-    $('#logout-nav').show().append('<a onclick="logout()">Logout</a>');
+    $('#settings-nav').show().append('<a class="nav-link" href="settings.html">' + cognitoUser.username + '</a>');
+    $('#actions-nav').show().append('<a class="nav-link" href="actions.html">Actions</a>');
+    $('#snapshots-nav').show().append('<a class="nav-link" href="snapshots.html">Snapshots</a>');
+    $('#things-nav').show().append('<a class="nav-link" href="things.html">Things</a>');
+    $('#logout-nav').show().append('<a class="nav-link" onclick="logout()">Logout</a>');
 }
 
 function unauthMenuSet() {
     emptyMenuSet();
     $('#logout-nav').hide();
-    $('#settings-nav').show().append('<a href="settings.html"><span class="glyphicon glyphicon-cog"></span> Settings</a>');
+    $('#settings-nav').show().append('<a class="nav-link" href="settings.html">Settings</a>');
     $('#actions-nav').hide();
     $('#snapshots-nav').hide();
     $('#things-nav').hide();
-    $('#login-nav').show().append('<a href="login.html">Login</a>');
+    $('#login-nav').show().append('<a class="nav-link" href="login.html">Login</a>');
 }
 
 function publish(key, title) {
@@ -111,11 +111,11 @@ function publish(key, title) {
     }, function (err, data) {
         if (err) {
             console.log(err, err.stack);
-            info.innerHTML = "<div class='alert alert-danger'><strong>" + err.code + "</strong></div>";
+            info.innerHTML = "<div class='alert alert-danger' role='alert'>" + err.code + "</div>";
             result.innerHTML = "";
         }
         else {
-            info.innerHTML = "<div class='alert alert-success'>" + title + "</div>";
+            info.innerHTML = "<div class='alert alert-success' role='alert'>" + title + "</div>";
         }
     });
 }
@@ -144,7 +144,7 @@ $('#signin').submit(function (e) {
             window.location = 'index.html';
         },
         onFailure: function (err) {
-            info.innerHTML = "<div class='alert alert-danger'><strong>" + err + "</strong></div>";
+            info.innerHTML = "<div class='alert alert-danger' role='alert'>" + err + "</div>";
             unauthMenuSet();
         },
         newPasswordRequired: function (userAttributes, requiredAttributes) {

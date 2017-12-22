@@ -18,6 +18,12 @@ def lambda_handler(event, context):
         o['name'] = obj['Key']
         o['url'] = s3.generate_presigned_url('get_object', Params={'Bucket': SNAPSHOTS, 'Key': obj['Key']})
         o['timestamp'] = date_handler(obj['LastModified'])
+        response = s3.get_object_tagging(
+            Bucket=SNAPSHOTS,
+            Key=obj['Key']
+        )
+        if 'TagSet' in response:
+            o['tags'] = response['TagSet']
         results.append(o)
     return results
 #

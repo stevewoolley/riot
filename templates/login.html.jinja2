@@ -1,18 +1,16 @@
 {% extends "base.jinja2" %}
 {% block content %}
-<div class="container">
-    <h1 id="banner">Login</h1>
+    <h1 class="bd-title" id="banner">Login</h1>
     <h4 id="info"></h4>
     <form id="signin">
         <div class="form-group">
-            <label for="username">Username:</label>
-            <input type="username" class="form-control" id="username">
+            <label for="username">Username</label>
+            <input type="text" class="form-control" id="username">
         </div>
         <div class="form-group">
-            <label for="password">Password:</label>
+            <label for="password">Password</label>
             <input type="password" class="form-control" id="password">
         </div>
-        <button type="submit" class="btn btn-default">Submit</button>
+        <button type="submit" class="btn btn-primary">Submit</button>
     </form>
-</div>
 {% endblock %}

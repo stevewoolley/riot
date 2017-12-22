@@ -1,10 +1,8 @@
 {% extends "base.jinja2" %}
 {% block content %}
-<div class="container">
-    <h1 id="banner">Snapshots</h1>
+    <h1 class="bd-title" id="banner">Snapshots</h1>
     <h4 id="info"><i class="fa fa-refresh fa-spin" style="font-size:24px"></i></h4>
     <div id="result"></div>
-</div>
 {% endblock %}
 {% block code %}
 <script>
@@ -23,7 +21,7 @@
                 logout();
             }
             else {
-                info.innerHTML = "<div class='alert alert-danger'><strong>" + err.code + "</strong></div>";
+                info.innerHTML = "<div class='alert alert-danger role='alert'>" + err.code + "</div>";
             }
         }
         else {
@@ -34,9 +32,17 @@
                 h+="<a href='archives.html?prefix=" + output[i].name.split(".")[0];
                 h+="-";
                 h+="'>";
-                h+="<img class='img-responsive' src='" + output[i].url + "' alt='" + output[i].name + "'>";
+                h+="<img class='img-fluid' src='" + output[i].url + "' alt='" + output[i].name + "'>";
                 h+="</a>";
+                h+="<p>";
+                for (var t in output[i].tags) {
+                    h+="<div class='capitalize'><b>" + output[i].tags[t].Key.split("_").join(" ") + ": </b>";
+                    h+= output[i].tags[t].Value.split("_").join(" ").replace(/\+/g, ", ") + "</div>";
+                }
+                h+="</p>";
+                h+="<br/>"
             }
+            h+="</div>";
             h+="</div>";
             info.innerHTML = "";
             result.innerHTML = h;

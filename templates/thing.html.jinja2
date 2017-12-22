@@ -1,10 +1,8 @@
 {% extends "base.jinja2" %}
 {% block content %}
-    <div class="container">
-        <h1 id="banner"></h1>
-        <h4 id="info"><i class="fa fa-refresh fa-spin" style="font-size:24px"></i></h4>
-        <div id="result"></div>
-    </div>
+    <h1 class="bd-title" id="banner"></h1>
+    <h4 id="info"><i class="fa fa-refresh fa-spin" style="font-size:24px"></i></h4>
+    <div id="result"></div>
 {% endblock %}
 {% block code %}
     <script>
@@ -22,7 +20,7 @@
                     logout();
                 }
                 else {
-                    info.innerHTML = "<div class='alert alert-danger'><strong>" + err.code + "</strong></div>";
+                    info.innerHTML = "<div class='alert alert-danger role='alert'>" + err.code + "</div>";
                     result.innerHTML = "";
                 }
 
@@ -110,7 +108,7 @@
                     }
                     h += "</td>";
                     // history
-                    h += "<td><a href='metricHistory.html?thing=" + getParameterByName('id') + "&metric=" + y + "'><span class='glyphicon glyphicon-time'></span></a></td>";
+                    h += "<td><a href='metricHistory.html?thing=" + getParameterByName('id') + "&metric=" + y + "'>History</span></a></td>";
                     // end row
                     h += "</tr>";
                 }

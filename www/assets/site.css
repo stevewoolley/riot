@@ -1,0 +1,19 @@
+body {
+  padding-top: 5rem;
+}
+.bd-title {
+    margin-top: 1rem;
+    margin-bottom: .5rem;
+    font-weight: 300;
+}
+
+.album {
+    min-height: 50rem;
+    padding-top: 3rem;
+    padding-bottom: 3rem;
+    background-color: #f7f7f7;
+}
+
+div.capitalize {
+    text-transform: capitalize;
+}

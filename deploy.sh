@@ -72,7 +72,9 @@ cd edit
 aws s3 sync . s3://$BUCKET --cache-control max-age="$MAX_AGE" --acl public-read
 cd ../..
 # Updating www app.js
-echo "Sync app.js"
+echo "Sync assets"
 cd www/assets
-aws s3 cp ./app.js s3://$BUCKET/assets/ --cache-control max-age="$MAX_AGE" --acl public-read
+for f in $(ls -1 *.*); do
+  aws s3 cp ./$f s3://$BUCKET/assets/ --cache-control max-age="$MAX_AGE" --acl public-read
+done
 cd ../..
