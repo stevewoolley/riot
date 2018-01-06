@@ -8,7 +8,8 @@
 <script>
     var lambda = new AWS.Lambda();
     var input = {"prefix": getParameterByName('prefix')};
-    banner.innerHTML = getParameterByName('prefix')
+    var page = parseInt(getParameterByName('page'));
+    banner.innerHTML = getParameterByName('prefix');
     lambda.invoke({
         FunctionName: 'iotGetArchives',
         Payload: JSON.stringify(input)
@@ -25,9 +26,23 @@
         else {
             var output = JSON.parse(data.Payload);
             var h="<div class='list-group'>";
-            for (var i in output) {
-                h+="<a href='" + output[i].url + "' class='list-group-item'>" + output[i].name + " (" + output[i].size + ")</a>";
+            var arrayLength = output.length;
+            var start = 0;
+            var end = 0;
+            var pagesize = 20;
+            if (page) {
+                start = page * pagesize;
             }
+            end = start + pagesize;
+            if (end > arrayLength) {
+                end = arrayLength;
+            }
+            for (var i = start; i < end; i++) {
+                if (output[i]) {
+                    h += "<a href='" + output[i].url + "' class='list-group-item'>" + output[i].name + " (" + sizeOf(output[i].size) + ")</a>";
+                }
+            }
+
             h+="</div>";
             info.innerHTML = "";
             result.innerHTML = h;
