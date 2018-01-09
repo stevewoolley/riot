@@ -2,133 +2,129 @@
 <html lang="en">
 <head>
     <title>Snerted</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <meta charset="UTF-8">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/css/bootstrap.min.css"
+          integrity="sha384-Zug+QiDoJOrZ5t4lssLdxGhVrurbmBWopoEl+M6BdEfwnCJZtKxi1KgxUyJq13dy" crossorigin="anonymous">
 
-    <!-- Latest compiled and minified CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
-          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-
-    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-
-    <!-- Optional theme -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css"
-          integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <!-- Latest compiled and minified JavaScript -->
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
-            integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
-            crossorigin="anonymous"></script>
 
-    <script src="assets/jsbn.js"></script>
-    <script src="assets/jsbn2.js"></script>
-    <script src="assets/sjcl.min.js"></script>
-    <script src="assets/moment.min.js"></script>
-    <script src="assets/aws-cognito-sdk.min.js"></script>
-    <script src="assets/amazon-cognito-identity.min.js"></script>
-    <script src="assets/aws-sdk.min.js"></script>
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link href="assets/site.css" rel="stylesheet">
 
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-
+    <link rel="apple-touch-icon" sizes="57x57" href="/apple-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="/apple-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="/apple-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="/apple-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="/apple-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="/apple-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="/apple-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="/apple-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-icon-180x180.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="/android-icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/manifest.json">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="msapplication-TileImage" content="/ms-icon-144x144.png">
+    <meta name="theme-color" content="#ffffff">
 </head>
 <body>
-<nav class="navbar navbar-inverse">
-    <div class="container-fluid">
-        <div class="navbar-header">
-            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-            <a class="navbar-brand" href="index.html">Snerted</a>
-        </div>
-        <div class="collapse navbar-collapse" id="myNavbar">
-            <ul class="nav navbar-nav">
-                <li id="movies-nav"><a href="movies.html">Movies</a></li>
-                <li id="things-nav"></li>
-                <li id="actions-nav"></li>
-                <li id="snapshots-nav"></li>
+
+<header>
+    <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+        <a class="navbar-brand" href="#">Snerted</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li id="movies-nav" class="nav-item"><a class="nav-link" href="movies.html">Movies</a></li>
+                <li id="things-nav" class="nav-item"></li>
+                <li id="actions-nav" class="nav-item"></li>
+                <li id="snapshots-nav" class="nav-item"></li>
             </ul>
-            <ul class="nav navbar-nav navbar-right">
+            <ul class="navbar-nav navbar-right">
                 <li id="settings-nav"></li>
                 <li id="login-nav"></li>
                 <li id="logout-nav"></li>
             </ul>
         </div>
-    </div>
-</nav>
+    </nav>
+</header>
+<main role="main" class="container">
+    
+    <h1 class="bd-title" id="banner">Movies Disclaimer</h1>
+    <h4>Why?</h4>
+    <p>Really two reasons for putting this list together:</p>
+    <ul>
+        <li>
+            A co-worker mentioned that he has a friend that made the statement "No good movies were made
+            before 2000".
+            Another co-worker responded (later) with "were there any good movies made after 2000".
+            This statement bugged me for a number of days until it boiled over into me making my own
+            list.
+        </li>
+        <li>
+            At the end of my life, I (probably) won't have a vast fortune to bequeath to my son.
+            However, I do love (and am passionate) movies and would want my son to understand and at
+            least recognize those movies which I consider good.
+            He would probably say "buy me a hamburger and we'll call it even" but here goes...
+        </li>
+    </ul>
+    <h4>Why isn't the list ranked by favorites?</h4>
+    <p>On the internet, there are millions of lists ranking the best movies.
+        My opinion is that, like music, people's tastes change on any number of factors: time of day, time
+        of year, seasons, political climate, technology changes, etc.
+        My feeling is that any list I created but be "stale" almost immediately.
+        My goal was to simply list the movies that I liked and expect the agreements//disagreements that
+        followed.</p>
+    <h4>Criteria</h4>
+    <p>The movies on this list had to meet the following criteria/rationale:</p>
+    <ul>
+        <li>
+            All movies must be able to be watched/re-watched an infinite amount of times without
+            loosing (significant) appreciation.
+            Obviously, you can't (really) forget plot twists and surprise endings, but movies on my list
+            can be watched over and over with little bits of nuance added each time they're watched.
+        </li>
+        <li>
+            Movies on this list should be independent of the year they were made. They should be
+            timeless.
+            Humor, commentary, and content should span the passage of time. Some leniency (but not much)
+            for the quality of special effects is granted.
+        </li>
+        <li>
+            Some movies are included because they represent landmarks or game changers.
+        </li>
+    </ul>
 
-<div id="content">
-    <div class="container">
-        <h1 id="banner">Movies Disclaimer</h1>
-        <div id="result">
-            <div class="panel panel-default">
-                <div class="panel-heading"><h4>Why?</h4></div>
-                <div class="panel-body">
-                    Really two reasons for putting this list together:
-                    <ul>
-                        <li>
-                            A co-worker mentioned that he has a friend that made the statement "No good movies were made
-                            before 2000".
-                            Another co-worker responded (later) with "were there any good movies made after 2000".
-                            This statement bugged me for a number of days until it boiled over into me making my own
-                            list.
-                        </li>
-                        <li>
-                            At the end of my life, I (probably) won't have a vast fortune to bequeath to my son.
-                            However, I do love (and am passionate) movies and would want my son to understand and at
-                            least recognize those movies which I consider good.
-                            He would probably say "buy me a hamburger and we'll call it even" but here goes...
-                        </li>
-                    </ul>
-                </div>
-            </div>
-            <div class="panel panel-default">
-                <div class="panel-heading"><h4>Why isn't the list ranked by favorites?</h4></div>
-                <div class="panel-body">
-                    On the internet, there are millions of lists ranking the best movies.
-                    My opinion is that, like music, people's tastes change on any number of factors: time of day, time
-                    of year, seasons, political climate, technology changes, etc.
-                    My feeling is that any list I created but be "stale" almost immediately.
-                    My goal was to simply list the movies that I liked and expect the agreements//disagreements that
-                    followed.
-                </div>
-            </div>
-            <div class="panel panel-default">
-                <div class="panel-heading"><h4>Criteria</h4></div>
-                <div class="panel-body">
-                    The movies on this list had to meet the following criteria/rationale:
-                    <ul>
-                        <li>
-                            All movies must be able to be watched/re-watched an infinite amount of times without
-                            loosing (significant) appreciation.
-                            Obviously, you can't (really) forget plot twists and surprise endings, but movies on my list
-                            can be watched over and over with little bits of nuance added each time they're watched.
-                        </li>
-                        <li>
-                            Movies on this list should be independent of the year they were made. They should be
-                            timeless.
-                            Humor, commentary, and content should span the passage of time. Some leniency (but not much)
-                            for the quality of special effects is granted.
-                        </li>
-                        <li>
-                            Some movies are included because they represent landmarks or game changers.
-                        </li>
-                    </ul>
+</main>
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/js/bootstrap.min.js"
+        integrity="sha384-a5N7Y/aK3qNeh15eJKGWxsqtnX/wWdSZSKp+81YjTmS15nvnvxKHuzaWwXHDli+4"
+        crossorigin="anonymous"></script>
 
-                </div>
-            </div>
-            <div class="panel panel-default">
-                <div class="panel-heading"><h4>Errata</h4></div>
-                <div class="panel-body">
+<script src="assets/jsbn.js"></script>
+<script src="assets/jsbn2.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sjcl/1.0.7/sjcl.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.20.1/moment.min.js"></script>
+<script src="assets/aws-cognito-sdk.min.js"></script>
+<script src="assets/amazon-cognito-identity.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/aws-sdk/2.176.0/aws-sdk.min.js"></script>
+<script src="assets/app.js"></script>
 
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+
 
 </body>
 </html>

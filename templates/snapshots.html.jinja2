@@ -29,17 +29,18 @@
             var h = "<div>";
             var d = new Date();
             for (var i in output) {
+                h+="<figure class=\"figure\">"
                 h+="<a href='archives.html?prefix=" + output[i].name.split(".")[0];
                 h+="-";
                 h+="'>";
-                h+="<img class='img-fluid' src='" + output[i].url + "' alt='" + output[i].name + "'>";
+                h+="<img class='figure-img img-fluid rounded' src='" + output[i].url + "' alt='" + output[i].name + "'>";
                 h+="</a>";
-                h+="<p>";
+                h+="<figcaption class=\"figure-caption\">";
                 for (var t in output[i].tags) {
                     h+="<div class='capitalize'><b>" + output[i].tags[t].Key.split("_").join(" ") + ": </b>";
                     h+= output[i].tags[t].Value.split("_").join(" ").replace(/\+/g, ", ") + "</div>";
                 }
-                h+="</p>";
+                h+="</figcaption>";
                 h+="<br/>"
             }
             h+="</div>";
