@@ -34,7 +34,7 @@
                 logout();
             }
             else {
-                info.innerHTML = "<div class='alert alert-danger role='alert'>" + err.code + "</div>";
+                info.innerHTML = info.innerHTML = alert_msg('danger', err.code);
             }
         }
         else {

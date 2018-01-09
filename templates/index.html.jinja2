@@ -5,27 +5,5 @@
 {% endblock %}
 {% block code %}
 <script>
-    var user = localStorage.getItem('token');
-    if (user) {
-        cognitoUser = userPool.getCurrentUser();
-        if (cognitoUser != null) {
-            cognitoUser.getSession(function (err, session) {
-                if (err) {
-                    alert(err);
-                    return;
-                }
-                console.log('session validity: ' + session.isValid());
-                AWS.config.credentials = new AWS.CognitoIdentityCredentials({
-                    IdentityPoolId: 'us-east-1:8c8c67e3-b02c-4815-80c2-50c09208ed08',
-                    Logins: {
-                        'cognito-idp.us-east-1.amazonaws.com/us-east-1_rm9RV1HYt': JSON.parse(localStorage.getItem('token'))
-                    }
-                });
-                // Instantiate aws sdk service objects now that the credentials have been updated.
-                // example: var s3 = new AWS.S3();
-
-            });
-        }
-    }
 </script>
 {% endblock %}

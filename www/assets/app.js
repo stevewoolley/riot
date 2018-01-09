@@ -6,19 +6,6 @@ AWS.config.credentials = new AWS.CognitoIdentityCredentials({
     }
 });
 
-AWSCognito.config.region = 'us-east-1';
-AWSCognito.config.credentials = new AWS.CognitoIdentityCredentials({
-    IdentityPoolId: 'us-east-1_rm9RV1HYt'
-});
-
-var userPool = new AWSCognito.CognitoIdentityServiceProvider.CognitoUserPool({
-    UserPoolId: 'us-east-1_rm9RV1HYt',
-    ClientId: 'iu9gq16hq8q4ooog6slbdr6ms'
-});
-
-var user = localStorage.getItem('token');
-var cognitoUser = userPool.getCurrentUser();
-
 $(document).ready(function () {
     updateAuthenticationStatus();
 });
@@ -49,6 +36,10 @@ function pretty_numeric(n) {
     }
 }
 
+function alert_msg(style, msg) {
+    return "<div class='alert alert-" + style + "' role='alert'>" + msg + "</div>";
+}
+
 function getParameterByName(name, url) {
     if (!url) {
         url = window.location.href;
@@ -62,12 +53,14 @@ function getParameterByName(name, url) {
 }
 
 sizeOf = function (bytes) {
-  if (bytes == 0) { return "0.00 B"; }
-  var e = Math.floor(Math.log(bytes) / Math.log(1024));
-  return (bytes/Math.pow(1024, e)).toFixed(2)+' '+' KMGTP'.charAt(e)+'B';
+    if (bytes == 0) {
+        return "0.00 B";
+    }
+    var e = Math.floor(Math.log(bytes) / Math.log(1024));
+    return (bytes / Math.pow(1024, e)).toFixed(2) + ' ' + ' KMGTP'.charAt(e) + 'B';
 }
 
-function updateAuthenticationStatus() {
+function updateAuthenticationStatus(user) {
     var user = localStorage.getItem('token');
     if (user) {
         authMenuSet();
@@ -91,7 +84,7 @@ function emptyMenuSet() {
 function authMenuSet() {
     emptyMenuSet();
     $('#login-nav').hide();
-    $('#settings-nav').show().append('<a class="nav-link" href="settings.html">' + cognitoUser.username + '</a>');
+    $('#settings-nav').show().append('<a class="nav-link" href="settings.html">Settings</a>');
     $('#actions-nav').show().append('<a class="nav-link" href="actions.html">Actions</a>');
     $('#snapshots-nav').show().append('<a class="nav-link" href="snapshots.html">Snapshots</a>');
     $('#things-nav').show().append('<a class="nav-link" href="things.html">Things</a>');
@@ -101,7 +94,7 @@ function authMenuSet() {
 function unauthMenuSet() {
     emptyMenuSet();
     $('#logout-nav').hide();
-    $('#settings-nav').show().append('<a class="nav-link" href="settings.html">Settings</a>');
+    $('#settings-nav').hide();
     $('#actions-nav').hide();
     $('#snapshots-nav').hide();
     $('#things-nav').hide();
@@ -117,19 +110,29 @@ function publish(key, title) {
     }, function (err, data) {
         if (err) {
             console.log(err, err.stack);
-            info.innerHTML = "<div class='alert alert-danger' role='alert'>" + err.code + "</div>";
+            info.innerHTML = alert_msg('danger', err.code);
             result.innerHTML = "";
         }
         else {
-            info.innerHTML = "<div class='alert alert-success' role='alert'>" + title + "</div>";
+            info.innerHTML = alert_msg('success', title);
         }
     });
 }
 
 $('#signin').submit(function (e) {
     e.preventDefault();
+    AWSCognito.config.region = 'us-east-1';
+    AWSCognito.config.credentials = new AWS.CognitoIdentityCredentials({
+        IdentityPoolId: 'us-east-1_rm9RV1HYt'
+    });
+
     // Need to provide placeholder keys unless unauthorised user access is enabled for user pool
     AWSCognito.config.update({accessKeyId: 'anything', secretAccessKey: 'anything'});
+
+    var userPool = new AWSCognito.CognitoIdentityServiceProvider.CognitoUserPool({
+        UserPoolId: 'us-east-1_rm9RV1HYt',
+        ClientId: 'iu9gq16hq8q4ooog6slbdr6ms'
+    });
 
     var authenticationData = {
         Username: $('#username').val(),
@@ -147,10 +150,11 @@ $('#signin').submit(function (e) {
     cognitoUser.authenticateUser(authenticationDetails, {
         onSuccess: function (result) {
             localStorage.setItem('token', JSON.stringify(result.idToken.jwtToken));
+            localStorage.setItem('username', 'foo')
             window.location = 'index.html';
         },
         onFailure: function (err) {
-            info.innerHTML = "<div class='alert alert-danger' role='alert'>" + err + "</div>";
+            info.innerHTML = alert_msg('danger', err);
             unauthMenuSet();
         },
         newPasswordRequired: function (userAttributes, requiredAttributes) {
