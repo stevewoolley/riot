@@ -50,21 +50,19 @@
                 <li id="snapshots-nav" class="nav-item"></li>
             </ul>
             <ul class="navbar-nav navbar-right">
-                <li id="settings-nav"></li>
-                <li id="login-nav"></li>
-                <li id="logout-nav"></li>
+                <li id="settings-nav" class="nav-item"></li>
+                <li id="login-nav" class="nav-item"></li>
+                <li id="logout-nav" class="nav-item"></li>
             </ul>
         </div>
     </nav>
 </header>
 <main role="main" class="container">
     
-<h1 class="bd-title" id="banner">Settings</h1>
-<h4 id="info"></h4>
-<div class="list-group">
-    <a class="list-group-item list-group-item-action" href="changePassword.html">Change Password</a>
-    <a class="list-group-item list-group-item-action" href="lostPassword.html">Password Lost</a>
-</div>
+    <h1 class="bd-title" id="banner">Settings</h1>
+    <hr>
+    <h4 id="info"><i class="fa fa-refresh fa-spin" style="font-size:24px"></i></h4>
+    <div id="result"></div>
 
 </main>
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
@@ -85,6 +83,12 @@
 <script src="assets/amazon-cognito-identity.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/aws-sdk/2.176.0/aws-sdk.min.js"></script>
 <script src="assets/app.js"></script>
+
+    <script>
+        banner.innerHTML = "Settings for " + localStorage.getItem('username');
+        info.innerHTML = "";
+
+    </script>
 
 </body>
 </html>

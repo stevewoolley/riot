@@ -50,17 +50,18 @@
                 <li id="snapshots-nav" class="nav-item"></li>
             </ul>
             <ul class="navbar-nav navbar-right">
-                <li id="settings-nav"></li>
-                <li id="login-nav"></li>
-                <li id="logout-nav"></li>
+                <li id="settings-nav" class="nav-item"></li>
+                <li id="login-nav" class="nav-item"></li>
+                <li id="logout-nav" class="nav-item"></li>
             </ul>
         </div>
     </nav>
 </header>
 <main role="main" class="container">
     
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.bundle.min.js"></script>
     <h1 class="bd-title" id="banner"></h1>
+    <hr>
     <h4 id="info"><i class="fa fa-refresh fa-spin" style="font-size:24px"></i></h4>
     <div id="result"></div>
 
@@ -84,82 +85,89 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/aws-sdk/2.176.0/aws-sdk.min.js"></script>
 <script src="assets/app.js"></script>
 
-<script>
+    <script>
 
-    Date.prototype.formatMMDDYYYYHHMM = function() {
-        return (this.getMonth() + 1) +
-        "/" +  this.getDate() +
-        "/" +  this.getFullYear() +
-        " " + this.getHours() +
-        ":" + str_pad(this.getMinutes());
-    }
+        Date.prototype.formatMMDDYYYYHHMM = function () {
+            return (this.getMonth() + 1) +
+                "/" + this.getDate() +
+                "/" + this.getFullYear() +
+                " " + this.getHours() +
+                ":" + str_pad(this.getMinutes());
+        }
 
-    function str_pad(n) {
-        return String("00" + n).slice(-2);
-    }
+        function str_pad(n) {
+            return String("00" + n).slice(-2);
+        }
 
-    var lambda = new AWS.Lambda();
-    var metric = getParameterByName('metric');
-    var input = {"thing": getParameterByName('thing'), "metric": metric, "params": {}};
+        var lambda = new AWS.Lambda();
+        var metric = getParameterByName('metric');
+        var input = {"thing": getParameterByName('thing'), "metric": metric, "params": {}};
 
-    lambda.invoke({
-        FunctionName: 'iotGetMetrics',
-        Payload: JSON.stringify(input)
-    }, function(err, data) {
-        if (err) {
-            console.log(err, err.stack);
-            if (err.code == 'CredentialsError') {
-                logout();
+        lambda.invoke({
+            FunctionName: 'iotGetMetrics',
+            Payload: JSON.stringify(input)
+        }, function (err, data) {
+            if (err) {
+                console.log(err, err.stack);
+                if (err.code == 'CredentialsError') {
+                    logout();
+                }
+                else {
+                    info.innerHTML = info.innerHTML = alert_msg('danger', err.code);
+                }
             }
             else {
-                info.innerHTML = info.innerHTML = alert_msg('danger', err.code);
-            }
-        }
-        else {
-            var labels = [];
-            var myData = [];
-            var output = JSON.parse(data.Payload);
+                var labels = [];
+                var myData = [];
+                var output = JSON.parse(data.Payload);
 
-            for (var i in output) {
-                labels.push(new Date(output[i]['timestamp']).formatMMDDYYYYHHMM());
-                myData.push(output[i][metric].toString());
-            }
-            info.innerHTML = "";
-            result.innerHTML = "<canvas id='myChart'></canvas>";
-            var ctx = document.getElementById("myChart").getContext('2d');
-            var myChart = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        label: getParameterByName('thing') + ": " + getParameterByName('metric'),
-                        data: myData,
-                        backgroundColor: "rgba(251, 85, 85, 0.4)",
-                        pointRadius: 1
-                    }]
-                },
-                options: {
-                    elements: {
-                        line: {
-                            tension: 0, // disables bezier curves
-                        }
-                    },
-                    scales: {
-                        xAxes: [{
-                            type: 'time',
-                            time: {
-                                displayFormats: {
-                                    quarter: 'MMM D'
-                                }
-                            }
-                        }]
-                    }
+                for (var i in output) {
+                    labels.push(new Date(output[i]['timestamp']).formatMMDDYYYYHHMM());
+                    myData.push(output[i][metric].toString());
                 }
+                info.innerHTML = "";
+                result.innerHTML = "<canvas id='myChart'></canvas>";
+                var ctx = document.getElementById("myChart").getContext('2d');
+                var myChart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: getParameterByName('thing') + ": " + getParameterByName('metric'),
+                            data: myData,
+                            backgroundColor: "rgba(251, 85, 85, 0.4)",
+                            pointRadius: 0
+                        }]
+                    },
+                    options: {
+                        animation: {
+                            duration: 0, // general animation time
+                        },
+                        hover: {
+                            animationDuration: 0, // duration of animations when hovering an item
+                        },
+                        responsiveAnimationDuration: 0, // animation duration after a resize
+                        elements: {
+                            line: {
+                                tension: 0, // disables bezier curves
+                            }
+                        },
+                        scales: {
+                            xAxes: [{
+                                type: 'time',
+                                time: {
+                                    displayFormats: {
+                                        quarter: 'MMM D'
+                                    }
+                                }
+                            }]
+                        }
+                    }
 
-            });
-        }
-    });
-</script>
+                });
+            }
+        });
+    </script>
 
 </body>
 </html>

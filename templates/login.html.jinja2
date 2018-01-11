@@ -1,6 +1,7 @@
 {% extends "base.jinja2" %}
 {% block content %}
     <h1 class="bd-title" id="banner">Login</h1>
+    <hr>
     <h4 id="info"></h4>
     <form id="signin">
         <div class="form-group">
@@ -14,5 +15,9 @@
         <button type="submit" class="btn btn-primary">Submit</button>
     </form>
     <br/>
-    <p><a class="btn btn-default" href="/lostPassword.html" role="button">Forgot Password?</a></p>
+    <p>
+        <a class="btn btn-default" href="lostPassword.html" role="button">Forgot Password?</a>
+        <br/>
+        <a class="btn btn-default" href="privacy.html" role="button">Privacy Policy</a>
+    </p>
 {% endblock %}

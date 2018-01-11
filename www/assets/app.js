@@ -67,6 +67,9 @@ function updateAuthenticationStatus(user) {
     } else {
         unauthMenuSet();
     }
+    // hilite active menu item
+    var pathname = window.location.pathname.split('/');
+    $('.navbar a[href="' + pathname[pathname.length -1] + '"]').parent().addClass('active');
 }
 
 var info = document.getElementById('info');
@@ -84,11 +87,11 @@ function emptyMenuSet() {
 function authMenuSet() {
     emptyMenuSet();
     $('#login-nav').hide();
-    $('#settings-nav').show().append('<a class="nav-link" href="settings.html">Settings</a>');
+    $('#settings-nav').show().append('<a class="nav-link" title="Settings" href="settings.html"><i class="fa fa-user"></i></a>');
     $('#actions-nav').show().append('<a class="nav-link" href="actions.html">Actions</a>');
     $('#snapshots-nav').show().append('<a class="nav-link" href="snapshots.html">Snapshots</a>');
     $('#things-nav').show().append('<a class="nav-link" href="things.html">Things</a>');
-    $('#logout-nav').show().append('<a class="nav-link" onclick="logout()">Logout</a>');
+    $('#logout-nav').show().append('<a class="nav-link" title="Logout" onclick="logout()"><i class="fa fa-lock"></a>');
 }
 
 function unauthMenuSet() {
@@ -98,7 +101,7 @@ function unauthMenuSet() {
     $('#actions-nav').hide();
     $('#snapshots-nav').hide();
     $('#things-nav').hide();
-    $('#login-nav').show().append('<a class="nav-link" href="login.html">Login</a>');
+    $('#login-nav').show().append('<a class="nav-link" title="Login" href="login.html"><i class="fa fa-unlock"></a>');
 }
 
 function publish(key, title) {
@@ -150,7 +153,7 @@ $('#signin').submit(function (e) {
     cognitoUser.authenticateUser(authenticationDetails, {
         onSuccess: function (result) {
             localStorage.setItem('token', JSON.stringify(result.idToken.jwtToken));
-            localStorage.setItem('username', 'foo')
+            localStorage.setItem('username', userPool.getCurrentUser().username);
             window.location = 'index.html';
         },
         onFailure: function (err) {
@@ -165,11 +168,4 @@ $('#signin').submit(function (e) {
             cognitoUser.completeNewPasswordChallenge(newPassword, userAttributes, this)
         }
     });
-});
-
-$(document).ready(function () {
-    // get current URL path and assign 'active' class
-    var pathname = window.location.pathname;
-    if (pathname.charAt(0) == "/") pathname = pathname.substr(1);
-    $('.nav > li > a[href="' + pathname + '"]').parent().addClass('active');
 });

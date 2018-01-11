@@ -50,18 +50,19 @@
                 <li id="snapshots-nav" class="nav-item"></li>
             </ul>
             <ul class="navbar-nav navbar-right">
-                <li id="settings-nav"></li>
-                <li id="login-nav"></li>
-                <li id="logout-nav"></li>
+                <li id="settings-nav" class="nav-item"></li>
+                <li id="login-nav" class="nav-item"></li>
+                <li id="logout-nav" class="nav-item"></li>
             </ul>
         </div>
     </nav>
 </header>
 <main role="main" class="container">
     
-<h1 class="bd-title" id="banner">Things</h1>
-<h4 id="info"><i class="fa fa-refresh fa-spin" style="font-size:24px"></i></h4>
-<div id="result"></div>
+    <h1 class="bd-title" id="banner">Things</h1>
+    <hr>
+    <h4 id="info"><i class="fa fa-refresh fa-spin" style="font-size:24px"></i></h4>
+    <div id="result"></div>
 
 </main>
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
@@ -83,34 +84,34 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/aws-sdk/2.176.0/aws-sdk.min.js"></script>
 <script src="assets/app.js"></script>
 
-<script>
-    var lambda = new AWS.Lambda();
-    var input = {};
-    lambda.invoke({
-        FunctionName: 'iotGetThings',
-        Payload: JSON.stringify(input)
-    }, function(err, data) {
-        if (err) {
-            console.log(err, err.stack);
-            if (err.code == 'CredentialsError') {
-                logout();
+    <script>
+        var lambda = new AWS.Lambda();
+        var input = {};
+        lambda.invoke({
+            FunctionName: 'iotGetThings',
+            Payload: JSON.stringify(input)
+        }, function (err, data) {
+            if (err) {
+                console.log(err, err.stack);
+                if (err.code == 'CredentialsError') {
+                    logout();
+                }
+                else {
+                    info.innerHTML = alert_msg('danger', err.code);
+                }
             }
             else {
-                info.innerHTML = alert_msg('danger', err.code);
+                var output = JSON.parse(data.Payload);
+                var h = "<div class='list-group'>";
+                for (var i in output) {
+                    h += "<a href='thing.html?id=" + output[i].thingName + "' class='list-group-item  list-group-item-action'>" + output[i].thingName + "</a>";
+                }
+                h += "</div>";
+                info.innerHTML = "";
+                result.innerHTML = h;
             }
-        }
-        else {
-            var output = JSON.parse(data.Payload);
-            var h="<div class='list-group'>";
-            for (var i in output) {
-                h+="<a href='thing.html?id=" + output[i].thingName + "' class='list-group-item  list-group-item-action'>" + output[i].thingName + "</a>";
-            }
-            h+="</div>";
-            info.innerHTML = "";
-            result.innerHTML = h;
-        }
-    });
-</script>
+        });
+    </script>
 
 </body>
 </html>
