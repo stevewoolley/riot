@@ -3,21 +3,19 @@
     <h1 class="bd-title" id="banner">Login</h1>
     <hr>
     <h4 id="info"></h4>
-    <form id="signin">
+    <form id="signinForm">
         <div class="form-group">
-            <label for="username">Username</label>
-            <input type="text" class="form-control" id="username">
+            <label for="emailInputSignin">Email</label>
+            <input type="email" class="form-control" id="emailInputSignin" required>
         </div>
         <div class="form-group">
             <label for="password">Password</label>
-            <input type="password" class="form-control" id="password">
+            <input type="password" class="form-control" id="passwordInputSignin" pattern=".*" required>
         </div>
         <button type="submit" class="btn btn-primary">Submit</button>
     </form>
     <br/>
     <p>
-        <a class="btn btn-default" href="lostPassword.html" role="button">Forgot Password?</a>
-        <br/>
         <a class="btn btn-default" href="privacy.html" role="button">Privacy Policy</a>
     </p>
 {% endblock %}

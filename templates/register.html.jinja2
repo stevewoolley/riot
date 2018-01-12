@@ -1,0 +1,21 @@
+{% extends "base.jinja2" %}
+{% block content %}
+    <h1 class="bd-title" id="banner">Register</h1>
+    <hr>
+    <h4 id="info"></h4>
+    <form id="registrationForm">
+        <div class="form-group">
+            <label for="emailInputRegister">Email</label>
+            <input type="email" class="form-control" id="emailInputRegister" pattern=".*" required>
+        </div>
+        <div class="form-group">
+            <label for="passwordInputRegister">Password</label>
+            <input type="password" class="form-control" id="passwordInputRegister" pattern=".*" required>
+        </div>
+        <div class="form-group">
+            <label for="password2InputRegister">Confirm Password</label>
+            <input type="password" class="form-control" id="password2InputRegister" pattern=".*" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+{% endblock %}

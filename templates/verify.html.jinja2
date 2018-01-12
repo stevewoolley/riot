@@ -1,0 +1,17 @@
+{% extends "base.jinja2" %}
+{% block content %}
+    <h1 class="bd-title" id="banner">Verify Email</h1>
+    <hr>
+    <h4 id="info">Please check your email inbox or spam folder for your verification code.</h4>
+    <form id="verifyForm">
+        <div class="form-group">
+            <label for="emailInputVerify">Email</label>
+            <input type="email" class="form-control" id="emailInputVerify" pattern=".*" required>
+        </div>
+        <div class="form-group">
+            <label for="codeInputVerify">Password</label>
+            <input type="text" class="form-control" id="codeInputVerify" pattern=".*" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Verify</button>
+    </form>
+{% endblock %}

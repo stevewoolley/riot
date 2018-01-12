@@ -1,0 +1,30 @@
+{% extends "base.jinja2" %}
+{% block content %}
+    <h1 class="bd-title" id="banner">Ride</h1>
+    <hr>
+    <h4 id="info"><i class="fa fa-refresh fa-spin" style="font-size:24px"></i></h4>
+    <div id="result"></div>
+{% endblock %}
+{% block code %}
+    <script src="assets/auth.js"></script>
+    <script>
+        $.getJSON('https://81247tnlu8.execute-api.us-east-1.amazonaws.com/prod/movies', function (data) {
+            var html = "";
+            var y = 0;
+            $.each(data, function (key, val) {
+                if (y != val.year) {
+                    if (y != 0) {
+                        html += "</div></div>";
+                    }
+                    html += "<div class='media'><div class='media-body'>";
+                    html += "<h4>" + val.year + "</h4>";
+                    y = val.year;
+                }
+                html += "<p class=\"pl-5\"><a href='http://www.imdb.com/title/" + val.id + "'>" + val.title + "</a></p>";
+            });
+            html += "</div></div>";
+            result.innerHTML = html;
+        });
+        info.innerHTML = "";
+    </script>
+{% endblock %}
