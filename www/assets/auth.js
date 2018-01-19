@@ -1,4 +1,23 @@
 var Snerted = window.Snerted || {};
+
+function publish(key, title) {
+    $.ajax({
+        url: _config.api.invokeUrl + '/actions/' + key,
+        crossOrigin: true,
+        headers: {
+            Authorization: Snerted.token
+        },
+        success: function (data) {
+            info.innerHTML = alert_msg('success', title);
+        },
+        error: function (err) {
+            info.innerHTML = alert_msg('danger', err.code);
+        }
+    });
+
+}
+
+
 (function authScopeWrapper($) {
     Snerted.authToken.then(function setAuthToken(token) {
         if (token) {

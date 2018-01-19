@@ -6,48 +6,28 @@
     <div id="result"></div>
 {% endblock %}
 {% block code %}
-<script>
-    var lambda = new AWS.Lambda();
-    var input = {"prefix": getParameterByName('prefix')};
-    var page = parseInt(getParameterByName('page'));
-    banner.innerHTML = getParameterByName('prefix');
-    lambda.invoke({
-        FunctionName: 'iotGetArchives',
-        Payload: JSON.stringify(input)
-    }, function(err, data) {
-        if (err) {
-            console.log(err, err.stack);
-            if (err.code == 'CredentialsError') {
-                logout();
+    <script src="assets/auth.js"></script>
+    <script>
+        var prefix = getParameterByName('prefix');
+        $.ajax({
+            url: _config.api.invokeUrl + '/archives/' + prefix,
+            crossOrigin: true,
+            headers: {
+                Authorization: Snerted.token
+            },
+            success: function (data) {
+                var html = "<div class='list-group'>";
+                $.each(data, function (key, val) {
+                    html += "<a href='" + val.url + "' class='list-group-item'>" + val.name + " (" + sizeOf(val.size) + ")</a>";
+                });
+                html += "</div>";
+                result.innerHTML = html;
+                info.innerHTML = "";
+            },
+            error: function (err) {
+                info.innerHTML = alert_msg('danger', 'An error has occurred');
             }
-            else {
-                info.innerHTML = alert_msg('danger', err.code);
-            }
-        }
-        else {
-            var output = JSON.parse(data.Payload);
-            var h="<div class='list-group'>";
-            var arrayLength = output.length;
-            var start = 0;
-            var end = 0;
-            var pagesize = 20;
-            if (page) {
-                start = page * pagesize;
-            }
-            end = start + pagesize;
-            if (end > arrayLength) {
-                end = arrayLength;
-            }
-            for (var i = start; i < end; i++) {
-                if (output[i]) {
-                    h += "<a href='" + output[i].url + "' class='list-group-item'>" + output[i].name + " (" + sizeOf(output[i].size) + ")</a>";
-                }
-            }
+        });
+    </script>
 
-            h+="</div>";
-            info.innerHTML = "";
-            result.innerHTML = h;
-        }
-    });
-</script>
 {% endblock %}

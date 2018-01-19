@@ -33,16 +33,8 @@ def response(message, status_code):
 
 def lambda_handler(event, context):
     iot_data = boto3.client('iot-data', region_name=REGION)
-    topic = parameter_parser(event, TOPIC)
-    request = parameter_parser(event, REQUEST)
     key = parameter_parser(event, KEY)
-    if topic and request:
-        iot_data.publish(topic='{}'.format(topic), qos=0, payload=json.dumps(request))
-        return response({'topic': topic, 'request': json.dumps(request)}, 200)
-    elif topic:
-        iot_data.publish(topic='{}'.format(topic), qos=0, payload=json.dumps({}))
-        return response({'topic': topic}, 200)
-    elif key:
+    if key:
         ddb = boto3.resource('dynamodb', region_name=REGION)
         table = ddb.Table('triggers')
         record = table.query(KeyConditionExpression=Key(KEY).eq(key))['Items']
@@ -52,7 +44,7 @@ def lambda_handler(event, context):
                     if TOPIC in act:
                         if REQUEST in act:
                             iot_data.publish(topic='{}'.format(act[TOPIC]), qos=0, payload=json.dumps(act[REQUEST]))
-                            return response({'topic': act[TOPIC], 'request': act[REQUEST]}, 200)
                         else:
                             iot_data.publish(topic='{}'.format(act[TOPIC]), qos=0, payload=json.dumps({}))
-                            return response({'topic': act[TOPIC]}, 200)
+        return response({'key': key}, 200)
+

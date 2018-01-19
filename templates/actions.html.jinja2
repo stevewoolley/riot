@@ -10,40 +10,47 @@
     <script src="assets/auth.js"></script>
 
     <script>
-        var input = {};
-        var lambda = new AWS.Lambda();
-        lambda.invoke({
-            FunctionName: 'iotGetActions',
-            Payload: JSON.stringify(input)
-        }, function (err, data) {
-            if (err) {
-                console.log(err, err.stack);
-                if (err.code === 'CredentialsError') {
-                    Snerted.signOut();
-                }
-                else {
-                    info.innerHTML = alert_msg('danger', err.code);
-                }
-            }
-            else {
-                var output = JSON.parse(data.Payload);
-                var h = "<div class='list-group'>";
-                for (var i in output) {
-                    h += "<a onclick='publish(\"";
-                    h += output[i].key;
-                    h += "\",\"";
-                    h += output[i].title;
-                    h += "\")' class='list-group-item list-group-item-action'>";
-                    h += "<i class=\"fa fa-" + output[i].icon + "\"></i>&nbsp;"
-                    h += output[i].title;
-                    h += "</a>";
-                }
-                h += "</div>";
+        $.ajax({
+            url: _config.api.invokeUrl + '/actions',
+            crossOrigin: true,
+            headers: {
+                Authorization: Snerted.token
+            },
+            success: function (data) {
+                var html = "<div class='list-group'>";
+                $.each(data, function (key, val) {
+                    html += "<a onclick='publish(\"";
+                    html += val.key;
+                    html += "\",\"";
+                    html += val.title;
+                    html += "\")' class='list-group-item list-group-item-action'>";
+                    html += "<i class=\"fa fa-" + val.icon + "\"></i>&nbsp;"
+                    html += val.title;
+                    html += "</a>";
+
+                });
+                html += "</div>";
+                result.innerHTML = html;
                 info.innerHTML = "";
-                result.innerHTML = h;
+            },
+            error: function (err) {
+                var html = "<div class='list-group'>";
+                $.each(data, function (key, val) {
+                    html += "<a onclick='publish(\"";
+                    html += val.key;
+                    html += "\",\"";
+                    html += val.title;
+                    html += "\")' class='list-group-item list-group-item-action'>";
+                    html += "<i class=\"fa fa-" + val.icon + "\"></i>&nbsp;"
+                    html += val.title;
+                    html += "</a>";
+
+                });
+                html += "</div>";
+                result.innerHTML = html;
+                info.innerHTML = alert_msg('danger', 'An error has occurred');
             }
         });
-
     </script>
 
 {% endblock %}

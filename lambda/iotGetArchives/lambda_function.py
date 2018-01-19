@@ -43,4 +43,4 @@ def lambda_handler(event, context):
         o['timestamp'] = date_handler(obj['LastModified'])
         o['size'] = obj['Size']
         results.append(o)
-    return response(sorted(results, key=lambda k: k['name'], reverse=True), 200)
+    return response(sorted(results, key=lambda k: k['timestamp'], reverse=True), 200)
