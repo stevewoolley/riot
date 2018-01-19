@@ -1,15 +1,13 @@
 var Snerted = window.Snerted || {};
-
 (function authScopeWrapper($) {
-    var authToken;
     Snerted.authToken.then(function setAuthToken(token) {
         if (token) {
-            authToken = token;
+            Snerted.token = token;
         } else {
             window.location.href = 'login.html';
         }
     }).catch(function handleTokenError(error) {
-        alert(error);
+        info.innerHTML = alert_msg('danger', error);
         window.location.href = 'login.html';
     });
 

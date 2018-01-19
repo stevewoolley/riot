@@ -71,10 +71,9 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
         integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
         crossorigin="anonymous"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/js/bootstrap.min.js"
-        integrity="sha384-a5N7Y/aK3qNeh15eJKGWxsqtnX/wWdSZSKp+81YjTmS15nvnvxKHuzaWwXHDli+4"
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
         crossorigin="anonymous"></script>
-
 <script src="assets/jsbn.js"></script>
 <script src="assets/jsbn2.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/sjcl/1.0.7/sjcl.min.js"></script>
@@ -85,34 +84,29 @@
 <script src="assets/config.js"></script>
 <script src="assets/cognito-auth.js"></script>
 
+    <script src="assets/auth.js"></script>
     <script>
-        var lambda = new AWS.Lambda();
-        var input = {};
-        lambda.invoke({
-            FunctionName: 'iotGetThings',
-            Payload: JSON.stringify(input)
-        }, function (err, data) {
-            if (err) {
-                console.log(err, err.stack);
-                if (err.code == 'CredentialsError') {
-                    logout();
-                }
-                else {
-                    info.innerHTML = alert_msg('danger', err.code);
-                }
-            }
-            else {
-                var output = JSON.parse(data.Payload);
-                var h = "<div class='list-group'>";
-                for (var i in output) {
-                    h += "<a href='thing.html?id=" + output[i].thingName + "' class='list-group-item  list-group-item-action'>" + output[i].thingName + "</a>";
-                }
-                h += "</div>";
+        $.ajax({
+            url: _config.api.invokeUrl + '/things',
+            crossOrigin: true,
+            headers: {
+                Authorization: Snerted.token
+            },
+            success: function (data) {
+                var html = "<div class='list-group'>";
+                $.each(data, function (key, val) {
+                    html += "<a href='thing.html?id=" + val.thingName + "' class='list-group-item  list-group-item-action'>" + val.thingName + "</a>";
+                });
+                html += "</div>";
+                result.innerHTML = html;
                 info.innerHTML = "";
-                result.innerHTML = h;
+            },
+            error: function (err) {
+                info.innerHTML = alert_msg('danger', 'An error has occurred');
             }
         });
     </script>
+
 
 </body>
 </html>

@@ -51,33 +51,14 @@ def response(message, status_code):
 
 
 def lambda_handler(event, context):
-    DDB = boto3.resource('dynamodb', region_name=REGION)
+    iot_data = boto3.client('iot-data', region_name=REGION)
     thing = parameter_parser(event, 'thingId')
     metric = parameter_parser(event, 'metric')
-    p_key = Key(SENSORS_PARTITION_KEY).eq(thing)  # query must be partitioned
-    ex = {"#pkey": SENSORS_PARTITION_KEY, "#skey": SENSORS_SORT_KEY}
-    pe = "#pkey, #skey, {}"
-    item = []
-    for idx, a in enumerate(PAYLOAD_PREFIX.format(metric).split('.')):
-        ex["#n{}".format(idx)] = a
-        item.append("#n{}".format(idx))
-    resp = DDB.Table(SENSORS_TABLE).query(
-        ScanIndexForward=SCAN_INDEX_FORWARD,
-        KeyConditionExpression=p_key,
-        FilterExpression=Attr(PAYLOAD_PREFIX.format(metric)).exists(),
-        ExpressionAttributeNames=ex,
-        ProjectionExpression=pe.format('.'.join(item))
-    )
-    if ITEMS in resp:
-        # transform result to extract only interesting json key
-        for item in resp[ITEMS]:
-            tmp = item
-            if PAYLOAD_PREFIX.format(metric) is not None:
-                for i in PAYLOAD_PREFIX.format(metric).split('.'):
-                    tmp = tmp.get(i)
-                item[PAYLOAD_PREFIX.format(metric).split('.')[-1]] = tmp
-            del item[SENSORS_PAYLOAD]
-        #
-        return response(resp[ITEMS], 200)
-    else:
-        return response(None, 200)
+    resp = iot_data.get_thing_shadow(thingName=parameter_parser(event, 'thingId'))
+    body = resp['payload']
+    j = json.loads(body.read())
+    if 'state' in j:
+        if 'reported' in j['state']:
+            if metric in j['state']['reported']:
+                return response(j['state']['reported'][metric], 200)
+    return response(None, 200)

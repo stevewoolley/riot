@@ -6,33 +6,28 @@
     <div id="result"></div>
 {% endblock %}
 {% block code %}
+    <script src="assets/auth.js"></script>
     <script>
-        var lambda = new AWS.Lambda();
-        var input = {};
-        lambda.invoke({
-            FunctionName: 'iotGetThings',
-            Payload: JSON.stringify(input)
-        }, function (err, data) {
-            if (err) {
-                console.log(err, err.stack);
-                if (err.code == 'CredentialsError') {
-                    logout();
-                }
-                else {
-                    info.innerHTML = alert_msg('danger', err.code);
-                }
-            }
-            else {
-                var output = JSON.parse(data.Payload);
-                var h = "<div class='list-group'>";
-                for (var i in output) {
-                    h += "<a href='thing.html?id=" + output[i].thingName + "' class='list-group-item  list-group-item-action'>" + output[i].thingName + "</a>";
-                }
-                h += "</div>";
+        $.ajax({
+            url: _config.api.invokeUrl + '/things',
+            crossOrigin: true,
+            headers: {
+                Authorization: Snerted.token
+            },
+            success: function (data) {
+                var html = "<div class='list-group'>";
+                $.each(data, function (key, val) {
+                    html += "<a href='thing.html?id=" + val.thingName + "' class='list-group-item  list-group-item-action'>" + val.thingName + "</a>";
+                });
+                html += "</div>";
+                result.innerHTML = html;
                 info.innerHTML = "";
-                result.innerHTML = h;
+            },
+            error: function (err) {
+                info.innerHTML = alert_msg('danger', 'An error has occurred');
             }
         });
     </script>
+
 {% endblock %}
 

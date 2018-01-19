@@ -59,9 +59,9 @@
 </header>
 <main role="main" class="container">
     
-<h1 class="bd-title" id="banner"></h1>
-<h4 id="info"><i class="fa fa-refresh fa-spin" style="font-size:24px"></i></h4>
-<div id="result"></div>
+    <h1 class="bd-title" id="banner"></h1>
+    <h4 id="info"><i class="fa fa-refresh fa-spin" style="font-size:24px"></i></h4>
+    <div id="result"></div>
 
 </main>
 <script src="https://code.jquery.com/jquery-3.2.1.min.js"
@@ -70,10 +70,9 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
         integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
         crossorigin="anonymous"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/js/bootstrap.min.js"
-        integrity="sha384-a5N7Y/aK3qNeh15eJKGWxsqtnX/wWdSZSKp+81YjTmS15nvnvxKHuzaWwXHDli+4"
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
         crossorigin="anonymous"></script>
-
 <script src="assets/jsbn.js"></script>
 <script src="assets/jsbn2.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/sjcl/1.0.7/sjcl.min.js"></script>
@@ -84,49 +83,41 @@
 <script src="assets/config.js"></script>
 <script src="assets/cognito-auth.js"></script>
 
-<script>
-    var lambda = new AWS.Lambda();
-    var metric = getParameterByName('metric');
-    var input = {"thing": getParameterByName('thing'), "metric": metric, "params": {}};
-    banner.innerHTML = getParameterByName('thing') + ": " + metric;
+    <script src="assets/auth.js"></script>
+    <script>
+        var metric = getParameterByName('metric');
+        var thing = getParameterByName('thingId');
+        banner.innerHTML = thing + ": " + metric;
+        $.ajax({
+            url: _config.api.invokeUrl + '/metrics/' + thing + '/' + metric,
+            crossOrigin: true,
+            headers: {
+                Authorization: Snerted.token
+            },
+            success: function (data) {
+                var html = "<table class='table table-condensed'>";
+                $.each(data, function (key, val) {
+                    html += "<tr>";
+                    html += "<td>" + timeConverter(val.timestamp / 1000) + "</td>";
+                    if (isNumeric(val[metric])) {
+                        html += "<td>" + pretty_numeric(val[metric]) + "</td>";
+                    }
+                    else {
+                        html += "<td>" + val[metric] + "</td>";
+                    }
+                    html += "</tr>";
 
-    lambda.invoke({
-        FunctionName: 'iotGetHistory',
-        Payload: JSON.stringify(input)
-    }, function(err, data) {
-        if (err) {
-            console.log(err, err.stack);
-            if (err.code == 'CredentialsError') {
-                logout();
+                });
+                html += "</table>";
+                result.innerHTML = html;
+                info.innerHTML = "";
+            },
+            error: function (err) {
+                info.innerHTML = alert_msg('danger', 'An error has occurred');
             }
-            else {
-                info.innerHTML = alert_msg('danger', err.code);
-            }
-        }
-        else {
-            var output = JSON.parse(data.Payload);
-            var ts = 0;
-            var h="<table class='table table-condensed'>";
-            for (var y in output) {
-                if (output[y].timestamp / 1000 > ts) {
-                    ts = output[y].timestamp / 1000;
-                }
-                h+="<tr>";
-                h+="<td>" + timeConverter(output[y].timestamp / 1000) + "</td>";
-                if (isNumeric(output[y][metric])) {
-                    h+="<td>" + pretty_numeric(output[y][metric]) + "</td>";
-                }
-                else {
-                    h+="<td>" + output[y][metric] + "</td>";
-                }
-                h+="</tr>";
-            }
-            h+="</table>";
-            info.innerHTML = "";
-            result.innerHTML = h;
-        }
-    });
-</script>
+        });
+    </script>
+
 
 </body>
 </html>

@@ -1,51 +1,43 @@
 {% extends "base.jinja2" %}
 {% block content %}
-<h1 class="bd-title" id="banner"></h1>
-<h4 id="info"><i class="fa fa-refresh fa-spin" style="font-size:24px"></i></h4>
-<div id="result"></div>
+    <h1 class="bd-title" id="banner"></h1>
+    <h4 id="info"><i class="fa fa-refresh fa-spin" style="font-size:24px"></i></h4>
+    <div id="result"></div>
 {% endblock %}
 {% block code %}
-<script>
-    var lambda = new AWS.Lambda();
-    var metric = getParameterByName('metric');
-    var input = {"thing": getParameterByName('thing'), "metric": metric, "params": {}};
-    banner.innerHTML = getParameterByName('thing') + ": " + metric;
+    <script src="assets/auth.js"></script>
+    <script>
+        var metric = getParameterByName('metric');
+        var thing = getParameterByName('thingId');
+        banner.innerHTML = thing + ": " + metric;
+        $.ajax({
+            url: _config.api.invokeUrl + '/metrics/' + thing + '/' + metric,
+            crossOrigin: true,
+            headers: {
+                Authorization: Snerted.token
+            },
+            success: function (data) {
+                var html = "<table class='table table-condensed'>";
+                $.each(data, function (key, val) {
+                    html += "<tr>";
+                    html += "<td>" + timeConverter(val.timestamp / 1000) + "</td>";
+                    if (isNumeric(val[metric])) {
+                        html += "<td>" + pretty_numeric(val[metric]) + "</td>";
+                    }
+                    else {
+                        html += "<td>" + val[metric] + "</td>";
+                    }
+                    html += "</tr>";
 
-    lambda.invoke({
-        FunctionName: 'iotGetHistory',
-        Payload: JSON.stringify(input)
-    }, function(err, data) {
-        if (err) {
-            console.log(err, err.stack);
-            if (err.code == 'CredentialsError') {
-                logout();
+                });
+                html += "</table>";
+                result.innerHTML = html;
+                info.innerHTML = "";
+            },
+            error: function (err) {
+                info.innerHTML = alert_msg('danger', 'An error has occurred');
             }
-            else {
-                info.innerHTML = alert_msg('danger', err.code);
-            }
-        }
-        else {
-            var output = JSON.parse(data.Payload);
-            var ts = 0;
-            var h="<table class='table table-condensed'>";
-            for (var y in output) {
-                if (output[y].timestamp / 1000 > ts) {
-                    ts = output[y].timestamp / 1000;
-                }
-                h+="<tr>";
-                h+="<td>" + timeConverter(output[y].timestamp / 1000) + "</td>";
-                if (isNumeric(output[y][metric])) {
-                    h+="<td>" + pretty_numeric(output[y][metric]) + "</td>";
-                }
-                else {
-                    h+="<td>" + output[y][metric] + "</td>";
-                }
-                h+="</tr>";
-            }
-            h+="</table>";
-            info.innerHTML = "";
-            result.innerHTML = h;
-        }
-    });
-</script>
+        });
+    </script>
+
 {% endblock %}

@@ -1,5 +1,46 @@
 var Snerted = window.Snerted || {};
 
+function timeConverter(UNIX_timestamp) {
+    return moment(UNIX_timestamp * 1000).format("YYYY/MM/DD h:mm A");
+}
+
+function isNumeric(n) {
+    return !isNaN(parseFloat(n)) && isFinite(n);
+}
+
+function isFloat(n) {
+    return Number(n) === n && n % 1 !== 0;
+}
+
+function pretty_numeric(n) {
+    if (isFloat(n)) {
+        return n.toFixed(2);
+    }
+    else {
+        return n;
+    }
+}
+
+function getParameterByName(name, url) {
+    if (!url) {
+        url = window.location.href;
+    }
+    name = name.replace(/[\[\]]/g, "\\$&");
+    var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+        results = regex.exec(url);
+    if (!results) return null;
+    if (!results[2]) return '';
+    return decodeURIComponent(results[2].replace(/\+/g, " "));
+}
+
+sizeOf = function (bytes) {
+    if (bytes == 0) {
+        return "0.00 B";
+    }
+    var e = Math.floor(Math.log(bytes) / Math.log(1024));
+    return (bytes / Math.pow(1024, e)).toFixed(2) + ' ' + ' KMGTP'.charAt(e) + 'B';
+}
+
 function alert_msg(style, msg) {
     return "<div class='alert alert-" + style + "' role='alert'>" + msg + "</div>";
 }

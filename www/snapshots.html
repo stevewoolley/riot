@@ -71,10 +71,9 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
         integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
         crossorigin="anonymous"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/js/bootstrap.min.js"
-        integrity="sha384-a5N7Y/aK3qNeh15eJKGWxsqtnX/wWdSZSKp+81YjTmS15nvnvxKHuzaWwXHDli+4"
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
         crossorigin="anonymous"></script>
-
 <script src="assets/jsbn.js"></script>
 <script src="assets/jsbn2.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/sjcl/1.0.7/sjcl.min.js"></script>
@@ -85,51 +84,41 @@
 <script src="assets/config.js"></script>
 <script src="assets/cognito-auth.js"></script>
 
-<script>
-    var lambda = new AWS.Lambda();
-    function str_pad(n) {
-        return String("00" + n).slice(-2);
-    }
-    var input = {};
-    lambda.invoke({
-        FunctionName: 'iotGetSnapshots',
-        Payload: JSON.stringify(input)
-    }, function(err, data) {
-        if (err) {
-            console.log(err, err.stack);
-            if (err.code == 'CredentialsError') {
-                logout();
+    <script src="assets/auth.js"></script>
+
+    <script>
+        $.ajax({
+            url: _config.api.invokeUrl + '/snapshots',
+            crossOrigin: true,
+            headers: {
+                Authorization: Snerted.token
+            },
+            success: function (data) {
+                var html = "<div>";
+                $.each(data, function (key, val) {
+                    html += "<figure class=\"figure\">";
+                    html += "<a href='archives.html?prefix=" + val.name.split(".")[0];
+                    html += "-";
+                    html += "'>";
+                    html += "<img class='figure-img img-fluid rounded' src='" + val.url + "' alt='" + val.name + "'>";
+                    html += "</a>";
+                    html += "<figcaption class=\"figure-caption\">";
+                    for (var t in val.tags) {
+                        html += "<div class='capitalize'><b>" + val.tags[t].Key.split("_").join(" ") + ": </b>";
+                        html += val.tags[t].Value.split("_").join(" ").replace(/\+/g, ", ") + "</div>";
+                    }
+                    html += "</figcaption>";
+                    html += "</figure>";
+                });
+                html += "</div>";
+                result.innerHTML = html;
+                info.innerHTML = "";
+            },
+            error: function (err) {
+                info.innerHTML = alert_msg('danger', 'An error has occurred');
             }
-            else {
-                info.innerHTML = alert_msg('danger', err.code);
-            }
-        }
-        else {
-            var output = JSON.parse(data.Payload);
-            var h = "<div>";
-            var d = new Date();
-            for (var i in output) {
-                h+="<figure class=\"figure\">"
-                h+="<a href='archives.html?prefix=" + output[i].name.split(".")[0];
-                h+="-";
-                h+="'>";
-                h+="<img class='figure-img img-fluid rounded' src='" + output[i].url + "' alt='" + output[i].name + "'>";
-                h+="</a>";
-                h+="<figcaption class=\"figure-caption\">";
-                for (var t in output[i].tags) {
-                    h+="<div class='capitalize'><b>" + output[i].tags[t].Key.split("_").join(" ") + ": </b>";
-                    h+= output[i].tags[t].Value.split("_").join(" ").replace(/\+/g, ", ") + "</div>";
-                }
-                h+="</figcaption>";
-                h+="<br/>"
-            }
-            h+="</div>";
-            h+="</div>";
-            info.innerHTML = "";
-            result.innerHTML = h;
-        }
-    });
-</script>
+        });
+    </script>
 
 </body>
 </html>
