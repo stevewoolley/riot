@@ -28,7 +28,16 @@
                     var td2 = document.createElement("td");
                     var td3 = document.createElement("td");
                     td1.appendChild(document.createTextNode(key));
-                    td2.appendChild(document.createTextNode(obj[key]));
+                    if (isNumeric(obj[key])) {
+                        var a2 = document.createElement('a');
+                        a2.appendChild(document.createTextNode(obj[key]));
+                        a2.title = timeConverter(meta[key].timestamp);
+                        a2.href = "metricChart.html?thingId=" + thingId + "&metric=" + key;
+                        td2.appendChild(a2);
+                    }
+                    else {
+                        td2.appendChild(document.createTextNode(obj[key]));
+                    }
                     var a = document.createElement('a');
                     a.appendChild(document.createTextNode(timeConverter(meta[key].timestamp)));
                     a.title = timeConverter(meta[key].timestamp);

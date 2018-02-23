@@ -59,7 +59,6 @@
 </header>
 <main role="main" class="container">
     
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.bundle.min.js"></script>
     <h1 class="bd-title" id="banner"></h1>
     <hr>
     <h4 id="info"><i class="fa fa-refresh fa-spin" style="font-size:24px"></i></h4>
@@ -85,8 +84,10 @@
 <script src="assets/config.js"></script>
 <script src="assets/cognito-auth.js"></script>
 
-    <script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.bundle.min.js"></script>
+    <script src="assets/auth.js"></script>
 
+    <script>
         Date.prototype.formatMMDDYYYYHHMM = function () {
             return (this.getMonth() + 1) +
                 "/" + this.getDate() +
@@ -99,32 +100,22 @@
             return String("00" + n).slice(-2);
         }
 
-        var lambda = new AWS.Lambda();
         var metric = getParameterByName('metric');
-        var input = {"thing": getParameterByName('thing'), "metric": metric, "params": {}};
-
-        lambda.invoke({
-            FunctionName: 'iotGetMetrics',
-            Payload: JSON.stringify(input)
-        }, function (err, data) {
-            if (err) {
-                console.log(err, err.stack);
-                if (err.code == 'CredentialsError') {
-                    logout();
-                }
-                else {
-                    info.innerHTML = info.innerHTML = alert_msg('danger', err.code);
-                }
-            }
-            else {
+        var thing = getParameterByName('thingId');
+        banner.innerHTML = thing + ": " + metric;
+        $.ajax({
+            url: _config.api.invokeUrl + '/metrics/' + thing + '/' + metric,
+            crossOrigin: true,
+            headers: {
+                Authorization: Snerted.token
+            },
+            success: function (data) {
                 var labels = [];
                 var myData = [];
-                var output = JSON.parse(data.Payload);
-
-                for (var i in output) {
-                    labels.push(new Date(output[i]['timestamp']).formatMMDDYYYYHHMM());
-                    myData.push(output[i][metric].toString());
-                }
+                $.each(data, function (key, val) {
+                    labels.push(new Date(val['timestamp']).formatMMDDYYYYHHMM());
+                    myData.push(val[metric].toString());
+                });
                 info.innerHTML = "";
                 result.innerHTML = "<canvas id='myChart'></canvas>";
                 var ctx = document.getElementById("myChart").getContext('2d');
@@ -133,7 +124,6 @@
                     data: {
                         labels: labels,
                         datasets: [{
-                            label: getParameterByName('thing') + ": " + getParameterByName('metric'),
                             data: myData,
                             backgroundColor: "rgba(251, 85, 85, 0.4)",
                             pointRadius: 0
@@ -152,6 +142,9 @@
                                 tension: 0, // disables bezier curves
                             }
                         },
+                        legend: {
+                            display: false
+                        },
                         scales: {
                             xAxes: [{
                                 type: 'time',
@@ -165,8 +158,12 @@
                     }
 
                 });
+            },
+            error: function (err) {
+                info.innerHTML = alert_msg('danger', 'An error has occurred');
             }
         });
+
     </script>
 
 </body>
