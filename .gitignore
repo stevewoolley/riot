@@ -1,7 +1,6 @@
-.chalice/
 .idea/
 venv/
 config.json
-iam/edit/*
 www/edit/*
 lambda/*/lambda.json
+.DS_Store
